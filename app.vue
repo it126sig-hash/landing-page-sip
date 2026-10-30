@@ -21,7 +21,9 @@
   menang karena selektor kelas lebih spesifik daripada selektor elemen.
 */
 body {
-  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
 }
 
 /* Memastikan popup kotak tantangan gambar reCAPTCHA selalu muncul di paling depan layar */
