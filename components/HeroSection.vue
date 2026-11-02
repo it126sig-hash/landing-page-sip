@@ -1,444 +1,374 @@
 <script setup>
 import { useContent } from '~/composables/useContent';
 
-const { content, withBase } = useContent();
-
-const heroDesktop = content.hero.image || withBase('/assets/images/hero.webp');
-const heroMobile = content.hero.imageMobile || content.hero.heroMobile || withBase('/assets/images/hero-mobile.webp');
+const { content } = useContent();
 </script>
 
 <template>
-  <!--
-    Tinggi desktop dikurangi tinggi header (64px) DAN tinggi pita KPR (56px),
-    supaya hero beserta pita mitranya muat pas dalam satu layar. Tanpa itu pita
-    jatuh persis di bawah lipatan dan tidak pernah terlihat tanpa men-scroll —
-    padahal justru itu tujuannya dipindah keluar dari hero.
-  -->
-  <!--
-    min-h mobile 450px, bukan 300px.
-
-    Di bawah lg hero memakai `flex-1` di dalam pembungkus setinggi
-    calc(100vh-64px) bersama pita KPR (34px) dan section Tentang (±419px), jadi
-    tinggi alaminya = tinggi layar - 517. Di hampir semua ponsel (tinggi 568-932)
-    angka itu di bawah min-h, sehingga min-h-lah yang menentukan — dan itu bagus:
-    komposisinya jadi SAMA di semua ponsel, bukan ikut berubah per tinggi layar.
-
-    Kenapa 450. Isi hero menumpuk atas-bawah (judul+tagline di atas; tombol +
-    deskripsi di bawah), sedangkan papan nama "SANGGAR INDAH PARAHYANGAN" di
-    foto duduk di 41,5%-56,1% tinggi file. Karena foto mobile ter-cover
-    berdasarkan LEBAR, papan nama hanya turun 0,44px setiap hero ditambah 1px,
-    sementara tombol (menempel ke bawah) turun 1px penuh — tiap 1px tambahan
-    tinggi memberi 0,56px jarak bersih. Pada 300px tombol emas menimpa separuh
-    papan nama; 450px menyisakan ±18px di layar tersempit (320px) dan makin lega
-    di layar lebih besar.
-
-    Konsekuensinya section Tentang mulai lebih ke bawah di ponsel pendek. Itu
-    disengaja: pembungkusnya memakai min-h (bukan h) sehingga halaman tinggal
-    digulir, dan foto hero yang utuh lebih berharga daripada memaksa Tentang
-    ikut masuk satu layar.
-
-    Kalau tinggi tombol/deskripsi atau foto mobile-nya diganti, hitung ulang
-    angka ini — bukan angka keramat, hasil geometri di atas.
-  -->
-  <section class="relative isolate flex flex-col h-full min-h-[450px] lg:h-[calc(100vh-120px)] lg:min-h-[544px] overflow-hidden bg-[#12271b]">
-    <!--
-      ============================================================
-      BACKGROUND HERO — "SUNLIT GARDEN"
-      ============================================================
-      Fotonya render siang cerah: tanaman tropis hijau, signage tosca,
-      langit biru. Yang dulu membuatnya terasa terpisah dari website
-      adalah grade sepia + tumpukan overlay gelap — hasilnya coklat
-      keruh, padahal sisa halaman ini putih bersih + emas #c9a84c +
-      hijau forest #142B20.
-
-      Sekarang fotonya dibiarkan tetap segar (tanpa sepia), lalu diikat
-      ke palet brand lewat: cahaya hangat dari kanan-atas dan bayangan
-      yang jatuh ke hijau forest (bukan hitam). Hero ditutup garis emas
-      lurus — sengaja TIDAK menyambung/melengkung ke section berikutnya.
-
-      Urutan layer dari bawah ke atas:
-      1. Foto (grade segar + pan lambat)
-      2. Sunlight — pendar hangat dari kanan atas
-      3. Brand tint — mengikat foto ke emas & hijau forest
-      4. Dasar hijau forest (scrim CTA & deskripsi)
-      5. Scrim arah teks (kiri di desktop, atas di mobile)
-      6. Signage: halo cahaya + huruf ber-sheen emas
-      7. Bokeh emas — aksen playful, mengambang pelan
-      8. Vignette & grain halus
-      9. Garis emas lurus sebagai penutup
-    -->
-
-    <!--
-      1. Foto. Pan lambat dipasang di wrapper (bukan di tiap layer) supaya foto,
-      halo lampu, dan mask huruf tidak pernah bisa saling meleset.
-    -->
-    <div class="absolute inset-0 hero-pan" aria-hidden="true">
-      <!-- Desktop — digeser sedikit ke kiri supaya signage menjauh dari headline -->
-      <div class="hidden md:block absolute inset-0 bg-cover hero-photo hero-pos-desktop"
-        :style="{ backgroundImage: `url(${heroDesktop})` }"></div>
-
-      <!-- Mobile (fokus dikunci ke pita signage, bukan ke hamparan paving) -->
-      <div class="block md:hidden absolute inset-0 bg-cover hero-photo hero-pos-mobile"
-        :style="{ backgroundImage: `url(${heroMobile})` }"></div>
-    </div>
-
-    <!-- 2. Sunlight: matahari sore dari kanan atas, bukan filter sepia -->
-    <div class="absolute inset-0 hero-sun" aria-hidden="true"></div>
-
-    <!-- 3. Brand tint — emas di kiri atas, hijau forest di kanan bawah -->
-    <div class="absolute inset-0 hero-tint" aria-hidden="true"></div>
-
-    <!-- 4. Dasar hijau forest (keterbacaan CTA & deskripsi) -->
-    <div class="absolute inset-0 hero-ground" aria-hidden="true"></div>
-
-    <!-- 5. Scrim teks: dari kiri (desktop) / dari atas (mobile) -->
-    <div class="hidden md:block absolute inset-0 hero-scrim-left" aria-hidden="true"></div>
-    <div class="block md:hidden absolute inset-0 hero-scrim-top" aria-hidden="true"></div>
-
-    <!--
-      6. SIGNAGE
-      Mask huruf (signage-letters*.webp) diekstrak dari foto aslinya, jadi hanya
-      pixel huruf "SANGGAR INDAH PARAHYANGAN" yang tersorot. Ukuran & posisi mask
-      disamakan dengan fotonya (cover + posisi sama) supaya presisi di semua layar.
-    -->
-    <div class="absolute inset-0 hero-pan hero-signage" aria-hidden="true">
-      <!-- Halo cahaya — Desktop -->
-      <div class="hidden md:block absolute inset-0 bg-cover hero-lamp-glow hero-pos-desktop"
-        :style="{ backgroundImage: `url(${withBase('/assets/images/signage-glow.webp')})` }"></div>
-
-      <!-- Halo cahaya — Mobile -->
-      <div class="block md:hidden absolute inset-0 bg-cover hero-lamp-glow hero-pos-mobile"
-        :style="{ backgroundImage: `url(${withBase('/assets/images/signage-glow-mobile.webp')})` }"></div>
-
-      <!-- Sheen emas pada huruf — Desktop -->
-      <div class="hidden md:block absolute inset-0 bg-cover hero-letters-lit hero-pos-desktop"
-        :style="{
-          backgroundImage: `url(${heroDesktop})`,
-          '--letters-mask': `url(${withBase('/assets/images/signage-letters.webp')})`,
-        }"></div>
-
-      <!-- Sheen emas pada huruf — Mobile -->
-      <div class="block md:hidden absolute inset-0 bg-cover hero-letters-lit hero-pos-mobile"
-        :style="{
-          backgroundImage: `url(${heroMobile})`,
-          '--letters-mask': `url(${withBase('/assets/images/signage-letters-mobile.webp')})`,
-        }"></div>
-    </div>
-
-    <!--
-      7. Bokeh emas — cahaya matahari yang menembus dedaunan.
-      Sengaja hanya di sisi kanan/atas supaya tidak pernah menabrak
-      headline (kiri di desktop, kiri-atas di mobile).
-    -->
-    <div class="absolute inset-0 hero-bokeh" aria-hidden="true">
-      <span class="hero-orb hero-orb-1"></span>
-      <span class="hero-orb hero-orb-2"></span>
-      <span class="hero-orb hero-orb-3"></span>
-      <span class="hidden md:block hero-orb hero-orb-4"></span>
-    </div>
-
-    <!-- 8. Vignette + grain -->
-    <div class="absolute inset-0 hero-vignette" aria-hidden="true"></div>
-    <div class="absolute inset-0 hero-grain" aria-hidden="true"></div>
-
-    <!-- Garis emas tipis: penutup lurus hero, sama di mobile & desktop -->
-    <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/70 to-transparent"
-      aria-hidden="true"></div>
-
-    <!-- Content Container -->
-    <div class="relative flex-1 flex flex-col justify-between px-4 md:px-20 py-6 sm:py-10 lg:py-20">
-      <!-- Top Content: Title & Tagline -->
-      <div class="sm:max-w-[600px] lg:max-w-[80%]">
-        <!--
-          Logo bank sudah tidak di sini. Dulu ia berbagi baris dengan headline
-          di mobile (memotong headline jadi dua baris) dan melayang di kanan-atas
-          di desktop dengan latar emas yang sama dengan headline — dua blok emas
-          bersaing. Sekarang bank turun ke KprPartnerStrip, pita tipis tepat di
-          bawah hero, sebagai keterangan penyedia KPR.
-        -->
-        <!-- Headline - Kuning — focal point utama -->
-        <h1 class="font-display font-bold text-2xl min-[360px]:text-[1.7rem] min-[390px]:text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-8xl leading-[1.15] text-[#c9a84c] hero-headline-shadow">
-          {{ content.hero.headlineLines[0] }}
+  <section class="hero" id="beranda">
+    <div class="container hero-grid">
+      <!-- Left Column: Copy -->
+      <div class="hero-copy reveal">
+        <span class="eyebrow">{{ content.hero.eyebrow }}</span>
+        <h1 class="serif">
+          {{ content.hero.headlineLines[0] }}<br>
+          <em>{{ content.hero.headlineLines[1] }}</em>
         </h1>
-
-        <!-- Tagline - Putih, ALL CAPS -->
-        <p class="mt-1.5 sm:mt-3 font-body text-[11px] min-[360px]:text-xs sm:text-sm md:text-base tracking-wider uppercase text-white/95 font-medium hero-text-shadow">
-          {{ content.hero.tagline }}
-        </p>
-      </div>
-
-      <!-- Bottom Content: Button & Description -->
-      <div class="max-w-[600px]">
-        <!-- CTA Button - Kuning -->
-        <div class="mb-4 sm:mb-6">
-          <a href="#tipe"
-            class="inline-flex items-center px-5 py-2.5 sm:px-6 sm:py-3 bg-[#c9a84c] bg-grad-gold text-black font-semibold text-sm sm:text-base rounded-lg shadow-btn-gold hover:-translate-y-0.5 hover:bg-grad-gold-hover hover:shadow-btn-gold-lg active:translate-y-0 transition-all duration-200">
-            {{ content.hero.primaryCta || 'Lihat Tipe Rumah' }}
+        <p class="hero-lead">{{ content.hero.sub }}</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#tipe">
+            {{ content.hero.primaryCta }} <span class="arrow">↗</span>
+          </a>
+          <a class="btn btn-outline" href="#tentang">
+            {{ content.hero.secondaryCta }}
           </a>
         </div>
+        <div class="hero-note">
+          <div class="avatar-stack">
+            <span>SI</span>
+            <span>家</span>
+            <span>+</span>
+          </div>
+          <span>{{ content.hero.note }}</span>
+        </div>
+      </div>
 
-        <!-- Description - Putih -->
-        <p class="max-w-[500px] font-body text-xs sm:text-sm md:text-base leading-relaxed text-white hero-text-shadow">
-          {{ content.hero.sub }}
-        </p>
+      <!-- Right Column: Visual -->
+      <div class="hero-visual reveal">
+        <div class="hero-photo-wrap">
+          <img
+            class="hero-photo"
+            :src="content.hero.image"
+            alt="Foto Sanggar Indah Palastri"
+            loading="eager"
+            decoding="async"
+          />
+          <div class="hero-caption">
+            <div>
+              <strong>{{ content.hero.caption.title }}</strong>
+              <small>{{ content.hero.caption.sub }}</small>
+            </div>
+          </div>
+        </div>
+        <div class="hero-stamp" aria-hidden="true">
+          <span>{{ content.hero.stamp }}</span>
+        </div>
+        <div class="hero-float">
+          <span class="float-icon" aria-hidden="true">⌂</span>
+          <strong>{{ content.hero.float.title }}</strong>
+          <small>{{ content.hero.float.sub }}</small>
+        </div>
+        <div class="hero-deco" aria-hidden="true"></div>
       </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-/*
-  Titik fokus foto. Dipakai bersama oleh foto, halo lampu, dan mask huruf
-  supaya ketiganya selalu presisi menumpuk di posisi yang sama.
-
-  Desktop pakai X 42% (bukan center): kalau viewport lebih "tinggi" dari
-  rasio fotonya, cover memotong sisi kiri-kanan. Menggeser ke 42% berarti
-  yang ditampilkan lebih banyak rimbun pohon di kiri, sehingga signage
-  bergeser ke kanan — menjauh dari headline.
-*/
-.hero-pos-desktop {
-  background-position: 42% 48%;
-  --letters-pos: 42% 48%;
-}
-
-/* Di mobile hero-nya pendek: fokus dikunci ke pita signage, bukan paving kosong. */
-.hero-pos-mobile {
-  background-position: center 44%;
-  --letters-pos: center 44%;
-}
-
-/*
-  Pan lambat. scale 1.06 jadi baseline agar pergerakannya tidak pernah
-  menyingkap tepi. Dipakai dua kali (grup foto & grup signage) dengan
-  keyframes yang sama, jadi keduanya selalu bergerak seirama.
-*/
-.hero-pan {
-  transform: scale(1.06);
-  animation: heroPan 30s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-/*
-  Grup signage di-screen sebagai satu kesatuan (bukan per layer), supaya
-  area gelap di sekitar halo hilang dan hanya cahayanya yang memancar.
-*/
-.hero-signage {
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-/*
-  Foto: TANPA sepia. Sepia-lah yang dulu membuat tanaman jadi coklat dan
-  hero terasa lepas dari sisa website. Sekarang hijaunya justru dinaikkan
-  sedikit; terang diturunkan seperlunya agar teks putih & emas tetap terbaca.
-*/
-.hero-photo {
-  filter: brightness(0.82) contrast(1.06) saturate(1.14);
-}
-
-@keyframes heroPan {
-  from {
-    transform: scale(1.06) translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: scale(1.11) translate3d(-1.2%, -1%, 0);
-  }
-}
-
-/*
-  Sunlight: satu sumber cahaya hangat dari kanan atas + sapuan tipis di
-  langit. Screen blend, jadi ia hanya menambah cahaya — tidak mengaburkan
-  warna aslinya seperti sepia.
-*/
-.hero-sun {
-  background:
-    radial-gradient(58% 52% at 82% 6%,
-      rgba(255, 214, 148, 0.42) 0%,
-      rgba(255, 196, 118, 0.16) 45%,
-      rgba(255, 196, 118, 0) 72%),
-    linear-gradient(to bottom,
-      rgba(255, 226, 176, 0.20) 0%,
-      rgba(255, 210, 150, 0.06) 26%,
-      rgba(255, 210, 150, 0) 50%);
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-/*
-  Brand tint — pengikat warna. Emas #c9a84c di kiri-atas, hijau forest
-  #142B20 di kanan-bawah. Soft-light, jadi ia menggeser hue tanpa
-  menutup detail foto.
-*/
-.hero-tint {
-  background: linear-gradient(122deg,
-      rgba(201, 168, 76, 0.42) 0%,
-      rgba(201, 168, 76, 0.10) 38%,
-      rgba(20, 43, 32, 0.52) 100%);
-  mix-blend-mode: soft-light;
-  pointer-events: none;
-}
-
-/*
-  Paving & tanaman bawah ditarik ke hijau forest (bukan hitam), sekaligus
-  scrim untuk CTA.
-*/
-.hero-ground {
-  background: linear-gradient(to top,
-      rgba(18, 39, 27, 0.86) 0%,
-      rgba(20, 43, 32, 0.44) 24%,
-      rgba(20, 43, 32, 0) 54%);
-  pointer-events: none;
-}
-
-/* Desktop: teks di kiri, jadi scrim datang dari kiri dan foto sisi kanan tetap hidup */
-.hero-scrim-left {
-  background: linear-gradient(to right,
-      rgba(15, 33, 23, 0.78) 0%,
-      rgba(15, 33, 23, 0.30) 42%,
-      rgba(15, 33, 23, 0) 68%);
-  pointer-events: none;
-}
-
-/*
-  Mobile: hero pendek, teks menumpuk atas-bawah. Scrim atas dibuat lebih
-  ringan dan cepat memudar (habis di 52%), jadi pita tengah — signage &
-  tanaman — tetap cerah alih-alih ikut kelabu.
-*/
-.hero-scrim-top {
-  background: linear-gradient(to bottom,
-      rgba(15, 33, 23, 0.72) 0%,
-      rgba(15, 33, 23, 0.24) 30%,
-      rgba(15, 33, 23, 0) 52%);
-  pointer-events: none;
-}
-
-/* Pendaran lampu di sekitar huruf — diturunkan karena fotonya kini lebih cerah */
-.hero-lamp-glow {
-  opacity: 0.4;
-}
-
-/*
-  Huruf signage diberi sheen emas lembut (bukan "dinyalakan" penuh seperti
-  suasana malam) — cukup untuk membuatnya lepas dari latar dan senada
-  dengan headline emas.
-*/
-.hero-letters-lit {
-  filter: brightness(1.35) contrast(1.02) sepia(0.42) saturate(1.5);
-  opacity: 0.52;
-
-  -webkit-mask-image: var(--letters-mask);
-  mask-image: var(--letters-mask);
-  -webkit-mask-size: cover;
-  mask-size: cover;
-  -webkit-mask-position: var(--letters-pos);
-  mask-position: var(--letters-pos);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-}
-
-/*
-  Bokeh: cahaya matahari yang lolos di sela dedaunan. Screen blend + blur,
-  jadi terbaca sebagai cahaya, bukan lingkaran tempelan.
-*/
-.hero-bokeh {
-  mix-blend-mode: screen;
-  pointer-events: none;
+.hero {
+  padding: 36px 0 72px;
   overflow: hidden;
 }
 
-.hero-orb {
+.hero-grid {
+  display: grid;
+  grid-template-columns: 0.88fr 1.12fr;
+  gap: 44px;
+  align-items: center;
+  min-height: 560px;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  padding: 28px 0 26px 2px;
+}
+
+.hero-copy .eyebrow {
+  margin-bottom: 23px;
+}
+
+.hero h1 {
+  max-width: 570px;
+  margin: 0;
+  font-size: clamp(50px, 6vw, 83px);
+  line-height: 0.99;
+}
+
+.hero h1 em {
+  color: var(--green);
+  font-style: normal;
+}
+
+.hero-lead {
+  max-width: 390px;
+  margin: 26px 0 27px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hero-note {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-top: 50px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.avatar-stack {
+  display: flex;
+  padding-left: 5px;
+}
+
+.avatar-stack span {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  margin-left: -5px;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  background: #d2dfcd;
+  color: var(--green-deep);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.hero-visual {
+  position: relative;
+  min-width: 0;
+}
+
+.hero-photo-wrap {
+  position: relative;
+  height: 535px;
+  border-radius: 48% 48% 20px 20px / 36% 36% 20px 20px;
+  overflow: hidden;
+  background: #cbd6c4;
+}
+
+.hero-photo-wrap::after {
+  content: '';
   position: absolute;
-  border-radius: 9999px;
-  background: radial-gradient(circle,
-      rgba(255, 226, 160, 0.85) 0%,
-      rgba(201, 168, 76, 0.45) 45%,
-      rgba(201, 168, 76, 0) 70%);
-  filter: blur(1px);
-  will-change: transform;
-  animation: heroFloat 11s ease-in-out infinite alternate;
-}
-
-.hero-orb-1 {
-  width: 90px;
-  height: 90px;
-  top: 12%;
-  right: 8%;
-  opacity: 0.5;
-  animation-duration: 13s;
-}
-
-.hero-orb-2 {
-  width: 46px;
-  height: 46px;
-  top: 34%;
-  right: 24%;
-  opacity: 0.4;
-  animation-duration: 9s;
-  animation-delay: -3s;
-}
-
-.hero-orb-3 {
-  width: 22px;
-  height: 22px;
-  top: 22%;
-  right: 38%;
-  opacity: 0.55;
-  animation-duration: 7s;
-  animation-delay: -5s;
-}
-
-.hero-orb-4 {
-  width: 130px;
-  height: 130px;
-  top: 48%;
-  right: 3%;
-  opacity: 0.26;
-  animation-duration: 16s;
-  animation-delay: -8s;
-}
-
-@keyframes heroFloat {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  to {
-    transform: translate3d(-14px, -22px, 0) scale(1.12);
-  }
-}
-
-/* Vignette: menggelapkan tepi saja, tengah foto tetap hidup */
-.hero-vignette {
-  background: radial-gradient(120% 90% at 58% 44%,
-      rgba(10, 26, 18, 0) 36%,
-      rgba(10, 26, 18, 0.24) 74%,
-      rgba(10, 26, 18, 0.54) 100%);
+  inset: 35% 0 0;
+  background: linear-gradient(transparent, rgba(20, 34, 25, 0.30));
   pointer-events: none;
 }
 
-/* Grain halus — menghilangkan banding pada gradien & memberi kesan filmis */
-.hero-grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.045;
-  mix-blend-mode: overlay;
+.hero-photo {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-stamp {
+  position: absolute;
+  z-index: 3;
+  top: 28px;
+  right: -19px;
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  padding: 13px;
+  border-radius: 50%;
+  color: var(--green-deep);
+  background: #e4e9d9;
+  border: 1px solid rgba(52, 75, 60, 0.17);
+  text-align: center;
+  transform: rotate(10deg);
+}
+
+.hero-stamp span {
+  max-width: 70px;
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.05;
+}
+
+.hero-caption {
+  position: absolute;
+  z-index: 4;
+  left: 23px;
+  right: 23px;
+  bottom: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  color: white;
+}
+
+.hero-caption strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.hero-caption small {
+  display: block;
+  margin-top: 4px;
+  opacity: 0.83;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-float {
+  position: absolute;
+  z-index: 5;
+  left: -35px;
+  bottom: 76px;
+  width: 190px;
+  padding: 17px;
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.hero-float .float-icon {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sage-pale);
+  color: var(--green);
+  font-size: 15px;
+}
+
+.hero-float strong {
+  display: block;
+  margin: 12px 0 4px;
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.hero-float small {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.hero-deco {
+  position: absolute;
+  z-index: -1;
+  right: -100px;
+  bottom: -70px;
+  width: 270px;
+  height: 270px;
+  border: 1px solid rgba(83, 107, 85, 0.18);
+  border-radius: 50%;
   pointer-events: none;
 }
 
-/* Teks tetap kontras di atas foto yang kini lebih terang */
-.hero-headline-shadow {
-  text-shadow: 0 2px 20px rgba(6, 18, 13, 0.75), 0 1px 3px rgba(6, 18, 13, 0.65);
+.hero-deco::before,
+.hero-deco::after {
+  content: '';
+  position: absolute;
+  border: 1px solid rgba(83, 107, 85, 0.16);
+  border-radius: 50%;
+  inset: 22px;
 }
 
-.hero-text-shadow {
-  text-shadow: 0 1px 12px rgba(6, 18, 13, 0.7), 0 1px 2px rgba(6, 18, 13, 0.55);
+.hero-deco::after {
+  inset: 47px;
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (max-width: 900px) {
+  .hero-grid {
+    gap: 25px;
+    min-height: 490px;
+  }
+  .hero-photo-wrap {
+    height: 470px;
+  }
+  .hero h1 {
+    font-size: clamp(48px, 7vw, 68px);
+  }
+  .hero-float {
+    left: -20px;
+    width: 165px;
+  }
+}
 
-  .hero-pan,
-  .hero-orb {
-    animation: none;
+@media (max-width: 680px) {
+  .hero {
+    padding: 31px 0 48px;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    min-height: 0;
+  }
+  .hero-copy {
+    padding: 9px 0 0;
+  }
+  .hero-copy .eyebrow {
+    margin-bottom: 17px;
+  }
+  .hero h1 {
+    max-width: 480px;
+    font-size: clamp(51px, 13vw, 72px);
+  }
+  .hero-lead {
+    margin: 18px 0 22px;
+    font-size: 12px;
+  }
+  .hero-note {
+    margin-top: 25px;
+  }
+  .hero-visual {
+    margin: 0 9px 0 17px;
+  }
+  .hero-photo-wrap {
+    height: min(112vw, 470px);
+    border-radius: 47% 47% 15px 15px / 28% 28% 15px 15px;
+  }
+  .hero-stamp {
+    width: 82px;
+    height: 82px;
+    right: -14px;
+    top: 15px;
+  }
+  .hero-stamp span {
+    font-size: 12px;
+  }
+  .hero-float {
+    left: -17px;
+    bottom: 52px;
+    width: 145px;
+    padding: 13px;
+  }
+  .hero-float strong {
+    font-size: 16px;
+  }
+  .hero-float small {
+    font-size: 8px;
+  }
+  .hero-caption {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+  .hero-caption strong {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero-caption strong {
+    font-size: 17px;
   }
 }
 </style>

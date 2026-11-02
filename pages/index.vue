@@ -1,4 +1,7 @@
 <script setup>
+import { onMounted, onUnmounted } from 'vue';
+import { useContent } from '~/composables/useContent';
+
 const { content, withBase } = useContent();
 
 // Origin dinormalkan tanpa trailing slash, lalu URL absolut dirakit dari path
@@ -27,18 +30,45 @@ useSeoMeta({
 useHead({
   link: [{ rel: 'canonical', href: pageUrl }],
 });
+
+let revealObserver = null;
+
+onMounted(() => {
+  const reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && reveals.length > 0) {
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    reveals.forEach((el) => revealObserver.observe(el));
+  } else {
+    reveals.forEach((el) => el.classList.add('is-visible'));
+  }
+});
+
+onUnmounted(() => {
+  if (revealObserver) {
+    revealObserver.disconnect();
+    revealObserver = null;
+  }
+});
 </script>
 
 <template>
   <div>
     <TheHeader />
     <main>
-      <!-- Hero + About Section Container: 1 screen on mobile/tablet (< lg), standard full hero on desktop (lg:) -->
-      <div class="min-h-[calc(100vh-64px)] flex flex-col justify-between lg:min-h-0 lg:block">
-        <HeroSection class="flex-1 lg:flex-none" />
-        <KprPartnerStrip class="flex-shrink-0" />
-        <AboutSection class="flex-shrink-0 lg:flex-none" />
-      </div>
+      <HeroSection />
+      <TrustStrip />
+      <KprPartnerStrip />
+      <AboutSection />
       <ProductsSection />
       <ReasonsCardsSection />
       <FaqSection />
