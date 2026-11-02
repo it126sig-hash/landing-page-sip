@@ -27,9 +27,9 @@ function fadeOut() {
 </script>
 
 <template>
-  <div v-if="isLoading" ref="rootEl" class="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-4 bg-forest-deep">
+  <div v-if="isLoading" ref="rootEl" class="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-4 bg-paper">
     <img :src="content.meta.logo" :alt="`Logo ${content.meta.projectName}`" class="h-16 w-16 object-contain" />
-    <span class="font-display text-size-5 uppercase tracking-wide text-off-white">{{ content.meta.projectName }}</span>
-    <span class="h-8 w-8 animate-spin rounded-full border-2 border-orange border-t-transparent"></span>
+    <span class="font-serif text-sm tracking-wide text-ink font-medium">{{ content.meta.projectName }}</span>
+    <span class="h-8 w-8 animate-spin rounded-full border-2 border-green border-t-transparent"></span>
   </div>
 </template>

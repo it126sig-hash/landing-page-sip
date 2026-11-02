@@ -1,0 +1,17 @@
+:root {
+  --paper: #f6f5ef;
+  --paper-deep: #ebe9df;
+  --white: #fffefa;
+  --ink: #26352e;
+  --muted: #6d786f;
+  --green: #536b55;
+  --green-deep: #344b3c;
+  --green-soft: #dce4d8;
+  --sage-pale: #e9eee5;
+  --sand: #d9cdb4;
+  --line: rgba(38, 53, 46, .14);
+  --radius: 22px;
+  --shadow: 0 22px 60px rgba(39, 54, 45, .10);
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'DM Sans', Arial, sans-serif;
+}
