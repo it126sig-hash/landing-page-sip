@@ -7,7 +7,7 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 ## Ringkasan Proyek & Status Branch
 
 - **Git Branch:** `redesign-palastri` (dibuat dari `master` pada commit `dd954519c3977d0b36b0c17fb75dd388f582f44c`)
-- **Status Sesi:** Fase D selesai diverifikasi QA (Lokasi, FAQ Accordion, Kontak Form, Footer), Fase E siap dikerjakan.
+- **Status Sesi:** Fase E selesai diverifikasi QA (Floating WA, Header Konsultasi, Reskin Modals, Cleanup Aset Yatim), Fase F siap dikerjakan.
 - **Tujuan Utama:**
   1. Transformasi identitas Parahyangan → Palastri (Arjasari, Kab. Bandung).
   2. Redesign visual Natural Scandinavian × Modern Editorial (sage green, warm neutral, DM Sans, Fraunces).
@@ -23,8 +23,8 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 | **B** | **Header, Hero Split, Trust Strip, KPR Strip** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1280/1440/768/375, 1-layar fold, arch portrait 0.82, mobile menu) |
 | **C** | **Tentang, Pilihan Rumah (2 kartu + modal), Kenapa** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1280/768/375, modal interaktif, 0 JS error, 0 404) |
 | **D** | **Lokasi, FAQ Accordion, Kontak Form, Footer** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1440/1280/768/375, accordion 1-item, form kontak inline, 0 error/404) |
-| **E** | **Floating WA, Reskin Modal, Cleanup Aset Yatim** | **siap dikerjakan** | `frontend-agent` & `qa-agent` | Menunggu eksekusi setelah Fase D tuntas |
-| **F** | **QA Penuh & Dokumentasi Final** | belum | `qa-agent` & `doc-agent` | Menunggu Fase E tuntas |
+| **E** | **Floating WA, Reskin Modal, Cleanup Aset Yatim** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1440/1280/768/375, FAB WA Palastri, Header Konsultasi WA, Reskin KPR/MGM/Referral modals, 0 broken asset / 404) |
+| **F** | **QA Penuh & Dokumentasi Final** | **siap dikerjakan** | `qa-agent` & `doc-agent` | Siap dieksekusi setelah Fase E tuntas (Audit menyeluruh fungsionalitas, SEO, performa, dan final handoff docs) |
 
 ---
 
@@ -161,6 +161,42 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 
 ---
 
+## Rincian Eksekusi Fase E (Floating WA, Header Konsultasi, Reskin Modals, Cleanup Aset Yatim)
+
+### Checklist Task Builder (`frontend-agent`):
+- [x] `components/TheHeader.vue`:
+  - [x] Navigasi CTA Konsultasi langsung mengarah ke WhatsApp resmi via `wa('konsultasi')` dengan `target="_blank"` dan `rel="noopener noreferrer"`.
+  - [x] Sinkronisasi link CTA pada navbar desktop maupun dropdown panel mobile menu.
+- [x] `components/WhatsAppFloatingButton.vue`:
+  - [x] Pembersihan tuntas hack `fixed top-3 right-20` yang menumpuk di atas navbar saat scroll di posisi puncak.
+  - [x] Reskin FAB WhatsApp utama dengan warna brand hijau WhatsApp `#25D366` / `var(--green)`, ikon SVG tajam, dan bayangan lembut.
+  - [x] Reskin 4 opsi menu pop-up (Syarat KPR BCA, Syarat KPR BTN, Formulir Member Get Member, dan Chat WhatsApp langsung) serta tombol penutup (✕) dengan design tokens Palastri.
+  - [x] Penempatan ergonomis di pojok kanan bawah (`bottom-5 right-5`) dengan proteksi layout agar tidak menutupi form/footer di mobile.
+- [x] `components/KprTermsModal.vue`:
+  - [x] Reskin total dialog menggunakan tokens Palastri (`var(--white)`, border `var(--line)`).
+  - [x] Header tipografi Fraunces (`font-serif text-[var(--ink)]`) dengan logo perbankan berlatar putih dan ring halus.
+  - [x] Navigasi tabs berlatar `var(--sage-pale)` dengan tab aktif putih berbayang halus.
+  - [x] Checklist dan kotak catatan bernuansa `var(--sage-pale)` & `var(--green)`.
+  - [x] Tombol CTA konsultasi WhatsApp menggunakan green pill button `.btn-primary`.
+- [x] `components/MemberGetMemberModal.vue`:
+  - [x] Reskin tema dialog, judul Fraunces, dan font sans untuk input form.
+  - [x] Checkbox dan aksen input menggunakan `accent-[var(--green)]`.
+  - [x] Tombol "Cek Kode" dan tombol submit "Kirim Pendaftaran" diubah ke pill hijau `.btn-primary` (`var(--green)`).
+  - [x] Sinkronisasi payload form pendaftaran dengan `source: 'landing-page-palastri'`.
+- [x] `components/ReferralWelcomeModal.vue`:
+  - [x] Reskin banner atas ke forest green deep `#26382E`.
+  - [x] Tombol aksi diubah ke green pill `.btn-primary` (`var(--green)`).
+  - [x] Session storage key diubah dari prefix Parahyangan ke `palastri:referral-welcome:`.
+- [x] `composables/useConsultationForm.js`:
+  - [x] Fallback source default pada formulir diperbarui dari `landing-page-sipar` ke `landing-page-palastri`.
+- [x] Pembersihan Aset & Komponen Yatim (*Orphaned Assets Cleanup*):
+  - [x] Hapus komponen mati `components/ReasonsCardsSection.vue` (sudah digantikan oleh `WhySection.vue`).
+  - [x] Hapus 20+ file gambar warisan Parahyangan: `2260-3d-ilustrasi.webp`, `2260-denah.webp`, `2672-3d-ilustrasi.webp`, `2672-denah.webp`, `3672-3d-ilustrasi.webp`, `3672-denah.webp`, `hero-mobile.webp`, `hero.webp`, `kenapa.webp`, `logo.webp`, `mascot.webp`, `petalokasi-v2.webp`, `signage-glow-mobile.webp`, `signage-glow.webp`, `signage-letters-mobile.webp`, `signage-letters.webp`, `signgate.webp`.
+  - [x] Hapus folder aset lawas `public/assets/images/fasilitas/` dan `public/assets/images/rumah/`.
+  - [x] Hapus file mentah pra-crop di `public/assets/images/palastri/`: `sip 2260.png`, `sip 2260 denah.jpg`, `sip 3172.jpg`, `sip 3172 denah.jpg`.
+
+---
+
 ## Log Debugging, Temuan & Catatan Teknis
 
 ### Log Verifikasi Fase A (`qa-agent` - 2026-10-30):
@@ -252,6 +288,47 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
     - [mobile-375-kontak.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/mobile-375-kontak.png)
     - [mobile-375-footer.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/mobile-375-footer.png)
 
+### Log Verifikasi Fase E (`qa-agent` - 2026-11-03):
+- **Build test:** PASS (`npm run build` & `npx nuxi generate` exit code 0).
+- **Playwright multi-viewport browser test:** PASS pada Desktop Luas (1440x900), Desktop Standar (1280x800), Tablet (768x1024), dan Mobile (375x667).
+- **Runtime console & network:**
+  - 0 error JavaScript console pada seluruh viewport pengujian.
+  - 0 broken image / 404 (seluruh 30 elemen gambar pada landing page termuat sempurna HTTP 200 OK pasca pembersihan aset yatim).
+- **Validasi Header CTA & Eliminasi Overlap:**
+  - Tombol CTA "Konsultasi ↗" di navbar desktop maupun mobile menu terhubung langsung ke link WhatsApp resmi `https://wa.me/6281222226683?text=Halo%20Admin%20Sanggar%20Indah%20Palastri...` via `wa('konsultasi')` dengan `target="_blank"`.
+  - Hack `fixed top-3 right-20` tuntas dihapus, header di posisi paling atas (`top: 0`) bersih dari tumpang tindih elemen.
+- **Validasi WhatsApp Floating Button (FAB) & Menu Interaktif:**
+  - FAB berlatar hijau `#25D366` / `var(--green)` terletak ergonomis di `bottom-5 right-5` dengan bayangan lembut, tidak menutupi input atau tombol submit form `FinalCtaSection` di layar mobile 375px.
+  - Klik FAB membuka pop-up menu 4 opsi (KPR BCA, KPR BTN, Form MGM, dan Chat WhatsApp Langsung) secara mulus.
+  - Tombol penutup (✕) menutup menu kembali dengan transisi bersih.
+- **Validasi Reskin Modal (KPR & Member Get Member):**
+  - Klik "Syarat KPR BCA" & "Syarat KPR BTN" membuka `KprTermsModal` bertema Palastri (Fraunces header, border token `var(--line)`, tab `var(--sage-pale)`, tombol konsultasi hijau). Tab Karyawan, Joint Income, dan Unit Subsidi dapat berpindah mulus.
+  - Klik "Isi Form Member Get Member" membuka `MemberGetMemberModal` dengan styling hijau Palastri, input fields responsif, dan tombol submit bertema hijau.
+- **Tautan bukti visual tangkapan layar (`docs/qa-evidence/fase-e/`):**
+  - Desktop 1440x900:
+    - [desktop-1440-header-fab.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1440-header-fab.png)
+    - [desktop-1440-fab-menu-open.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1440-fab-menu-open.png)
+    - [desktop-1440-modal-kpr-bca.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1440-modal-kpr-bca.png)
+    - [desktop-1440-modal-kpr-btn.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1440-modal-kpr-btn.png)
+    - [desktop-1440-modal-mgm.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1440-modal-mgm.png)
+  - Desktop 1280x800:
+    - [desktop-1280-header-fab.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1280-header-fab.png)
+    - [desktop-1280-fab-menu-open.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1280-fab-menu-open.png)
+    - [desktop-1280-modal-kpr.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1280-modal-kpr.png)
+    - [desktop-1280-modal-mgm.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/desktop-1280-modal-mgm.png)
+  - Tablet 768x1024:
+    - [tablet-768-header-fab.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/tablet-768-header-fab.png)
+    - [tablet-768-fab-menu-open.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/tablet-768-fab-menu-open.png)
+    - [tablet-768-modal-kpr.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/tablet-768-modal-kpr.png)
+    - [tablet-768-modal-mgm.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/tablet-768-modal-mgm.png)
+  - Mobile 375x667:
+    - [mobile-375-header-fab.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/mobile-375-header-fab.png)
+    - [mobile-375-menu-open.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/mobile-375-menu-open.png)
+    - [mobile-375-fab-menu-open.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/mobile-375-fab-menu-open.png)
+    - [mobile-375-modal-kpr.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/mobile-375-modal-kpr.png)
+    - [mobile-375-modal-mgm.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/mobile-375-modal-mgm.png)
+    - [mobile-375-form-and-fab.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/mobile-375-form-and-fab.png)
+
 ### Log Awal:
 - 2026-10-30: Branch `redesign-palastri` dibuat dari `master` (commit `dd954519c3977d0b36b0c17fb75dd388f582f44c`).
 - Persiapan aset: file denah tipe 31/72 resolusi rendah (300x430 px) dicatat sebagai debt visual untuk diperbarui bila klien mengirim versi HQ.
@@ -259,17 +336,22 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 
 ---
 
-## Konteks untuk Fase E (Siap Dikerjakan)
+## Konteks untuk Fase F (QA Penuh & Dokumentasi Final)
 
-- **Status:** **Siap dikerjakan** (Fase A, B, C, dan D selesai terverifikasi PASS di seluruh viewport dan interaksi).
-- **Target Pekerjaan Fase E:**
-  - `components/WhatsAppFloatingButton.vue`: Reskin tombol WhatsApp melayang ke tema Palastri (docking kanan bawah ergonomis, palet forest green/sage, tooltip halus, badge nomor kontak).
-  - Reskin Modal & Komponen Pendukung Tambahan:
-    - `components/MgmModal.vue` / modal simulasi KPR / dialog form tambahan bila masih memuat styling atau copy lama Parahyangan.
-  - Audit & Cleanup Aset Yatim:
-    - Audit folder `public/assets/` dari file gambar dan media spesifik Parahyangan yang tidak lagi dipakai.
-    - Audit kode untuk membersihkan styling/variabel yang tidak terpakai (orphaned styles/imports).
+- **Status:** **Siap dikerjakan** (Seluruh implementasi fitur dan visual Fase A, B, C, D, dan E selesai 100% dan terverifikasi PASS).
+- **Target Pekerjaan Fase F:**
+  1. **Audit QA Menyeluruh & Regresi Lintas Browser/Viewport:**
+     - Pengujian end-to-end dari atas ke bawah (Header → Hero → Trust → KPR → About → Products → Why → Location → FAQ → Final CTA → Footer).
+     - Pengujian fungsionalitas seluruh tautan interaktif, modal (HouseType, KPR, MGM, Referral), accordion FAQ, dan lightbox galeri.
+     - Verifikasi submit form konsultasi dan fallback WhatsApp generator.
+  2. **Audit SEO & Metadata:**
+     - Validasi Open Graph tags, Twitter card, canonical URL, sitemap, favicon, dan title/description Palastri di `nuxt.config.ts` dan `app.vue`.
+  3. **Audit Kinerja & Aksesibilitas:**
+     - Evaluasi Lighthouse / core web vitals dasar (CLS, LCP, FID).
+     - Verifikasi kontras warna teks terhadap background token Palastri (`var(--ink)`, `var(--forest)`, `var(--paper)`).
+  4. **Dokumentasi Final & Handoff:**
+     - Penutupan progress tracker dan penyusunan catatan rilis final redesign Sanggar Indah Palastri.
+     - Panduan serah terima dan langkah merge branch `redesign-palastri` ke branch utama (`master`).
 - **Standar Eksekusi:**
-  - Disiplin Karpathy Guidelines (surgical changes, zero regresi).
-  - Build lulus bersih (`npm run build` & `npx nuxi generate`).
-  - Verifikasi Playwright untuk memastikan floating button tidak menutupi elemen penting form/footer di mobile.
+  - Build produksi lulus bersih tanpa peringatan runtime (`npm run build` & `npx nuxi generate`).
+  - Rekaman bukti QA lengkap dan ringkasan audit komprehensif.

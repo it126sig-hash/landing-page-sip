@@ -12,12 +12,7 @@ const emit = defineEmits(['close']);
 const { content, wa, withBase } = useContent();
 const kpr = content.kprRequirements;
 
-// Logo bank diturunkan dari `title` ("Syarat KPR BCA" / "Syarat KPR BTN") karena
-// itulah satu-satunya pembeda yang dikirim pemanggil — datasetnya sendiri dipakai
-// bersama oleh kedua bank, jadi tidak ada field bank di content.kprRequirements.
-// Cocokkan sebagai kata utuh (\b) supaya tidak asal kena substring, dan kalau
-// judulnya nanti berubah jadi tanpa nama bank, nilainya null dan logo tinggal
-// tidak dirender — header tetap utuh.
+// Logo bank diturunkan dari `title` ("Syarat KPR BCA" / "Syarat KPR BTN")
 const bankLogo = computed(() => {
   const t = props.title || '';
   if (/\bBCA\b/i.test(t)) return { src: '/assets/images/bank/bca.webp', alt: 'Logo Bank BCA' };
@@ -82,13 +77,13 @@ const consultasiLink = wa('konsultasi');
           aria-modal="true"
           :aria-label="title"
           tabindex="-1"
-          class="relative w-full max-w-2xl rounded-3xl bg-white p-6 md:p-8 shadow-2xl focus:outline-none my-4 max-h-[90vh] overflow-y-auto"
+          class="relative w-full max-w-2xl rounded-3xl bg-[var(--white)] border border-[var(--line)] p-6 md:p-8 shadow-2xl focus:outline-none my-4 max-h-[90vh] overflow-y-auto"
         >
           <!-- Close Button -->
           <button
             type="button"
             aria-label="Tutup"
-            class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#EBF2ED] text-emerald-900 transition-colors hover:bg-emerald-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#142B20]"
+            class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-[var(--sage-pale)] text-[var(--ink)] transition-colors hover:bg-[var(--paper-deep)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--green)]"
             @click="emit('close')"
           >
             <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,29 +91,22 @@ const consultasiLink = wa('konsultasi');
             </svg>
           </button>
 
-          <!-- Header
-               Logo bank ditaruh di kiri judul sebagai penanda visual: pengguna
-               membuka modal ini dari dua tombol berbeda (BCA / BTN) yang isinya
-               identik, jadi logo memastikan mereka yakin sedang melihat bank yang
-               benar. Dibungkus kotak putih ber-ring karena kedua logo punya latar
-               terang — tanpa alas, logonya seolah mengambang di kertas modal.
-               object-contain wajib: rasio logo BCA dan BTN berbeda, kalau dipangkas
-               salah satunya akan terpotong. -->
-          <div class="pr-10 border-b border-gray-100 pb-4 mb-5">
+          <!-- Header -->
+          <div class="pr-10 border-b border-[var(--line)] pb-4 mb-5">
             <div class="flex items-center gap-3">
               <span v-if="bankLogo"
-                class="inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-gray-200 shadow-sm md:h-12 md:w-12">
+                class="inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-[var(--line)] shadow-sm md:h-12 md:w-12">
                 <img :src="withBase(bankLogo.src)" :alt="bankLogo.alt" class="h-full w-full object-contain" />
               </span>
-              <h2 class="font-display text-2xl md:text-3xl font-bold text-[#142B20]">
+              <h2 class="font-display font-serif text-2xl md:text-3xl font-bold text-[var(--ink)]">
                 {{ title }}
               </h2>
             </div>
-            <p class="mt-1 text-sm text-gray-500">Persyaratan KPR yang perlu disiapkan</p>
+            <p class="mt-1 text-sm text-[var(--muted)]">Persyaratan KPR yang perlu disiapkan</p>
           </div>
 
           <!-- Tab Navigation -->
-          <div class="flex gap-1 mb-5 bg-gray-100 rounded-xl p-1" role="tablist" :aria-label="title">
+          <div class="flex gap-1 mb-5 bg-[var(--sage-pale)] rounded-xl p-1" role="tablist" :aria-label="title">
             <button
               v-for="tab in tabs"
               :key="tab.key"
@@ -127,10 +115,10 @@ const consultasiLink = wa('konsultasi');
               :aria-selected="activeTab === tab.key"
               :aria-controls="`kpr-panel-${tab.key}`"
               :id="`kpr-tab-${tab.key}`"
-              class="flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#142B20]"
+              class="flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--green)]"
               :class="activeTab === tab.key
-                ? 'bg-white text-[#142B20] shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'"
+                ? 'bg-[var(--white)] text-[var(--ink)] shadow-sm'
+                : 'text-[var(--muted)] hover:text-[var(--ink)]'"
               @click="activeTab = tab.key"
             >
               {{ tab.label }}
@@ -151,9 +139,9 @@ const consultasiLink = wa('konsultasi');
                 <li
                   v-for="(doc, i) in kpr.karyawan.docs"
                   :key="i"
-                  class="flex items-start gap-3 text-sm text-gray-700"
+                  class="flex items-start gap-3 text-sm text-[var(--ink)]"
                 >
-                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--sage-pale)] text-[var(--green)]">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
@@ -162,9 +150,9 @@ const consultasiLink = wa('konsultasi');
                 </li>
               </ul>
               <!-- Notes -->
-              <div class="rounded-xl bg-[#EBF2ED] p-3.5 space-y-1">
-                <p class="text-xs font-semibold text-[#142B20] mb-1">Ketentuan Masa Kerja:</p>
-                <p v-for="(note, i) in kpr.karyawan.notes" :key="i" class="text-xs text-[#142B20]/80 flex items-start gap-2">
+              <div class="rounded-xl bg-[var(--sage-pale)] p-3.5 space-y-1">
+                <p class="text-xs font-semibold text-[var(--ink)] mb-1">Ketentuan Masa Kerja:</p>
+                <p v-for="(note, i) in kpr.karyawan.notes" :key="i" class="text-xs text-[var(--ink)]/80 flex items-start gap-2">
                   <span>•</span><span>{{ note }}</span>
                 </p>
               </div>
@@ -177,14 +165,14 @@ const consultasiLink = wa('konsultasi');
               role="tabpanel"
               aria-labelledby="kpr-tab-jointIncome"
             >
-              <p class="text-sm text-gray-600 mb-3 leading-relaxed">{{ kpr.jointIncome.intro }}</p>
+              <p class="text-sm text-[var(--muted)] mb-3 leading-relaxed">{{ kpr.jointIncome.intro }}</p>
               <ul class="space-y-2 mb-4">
                 <li
                   v-for="(doc, i) in kpr.jointIncome.docs"
                   :key="i"
-                  class="flex items-start gap-3 text-sm text-gray-700"
+                  class="flex items-start gap-3 text-sm text-[var(--ink)]"
                 >
-                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--sage-pale)] text-[var(--green)]">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
@@ -193,9 +181,9 @@ const consultasiLink = wa('konsultasi');
                 </li>
               </ul>
               <!-- Notes -->
-              <div class="rounded-xl bg-[#EBF2ED] p-3.5 space-y-1">
-                <p class="text-xs font-semibold text-[#142B20] mb-1">Ketentuan Masa Kerja:</p>
-                <p v-for="(note, i) in kpr.jointIncome.notes" :key="i" class="text-xs text-[#142B20]/80 flex items-start gap-2">
+              <div class="rounded-xl bg-[var(--sage-pale)] p-3.5 space-y-1">
+                <p class="text-xs font-semibold text-[var(--ink)] mb-1">Ketentuan Masa Kerja:</p>
+                <p v-for="(note, i) in kpr.jointIncome.notes" :key="i" class="text-xs text-[var(--ink)]/80 flex items-start gap-2">
                   <span>•</span><span>{{ note }}</span>
                 </p>
               </div>
@@ -208,39 +196,39 @@ const consultasiLink = wa('konsultasi');
               role="tabpanel"
               aria-labelledby="kpr-tab-subsidi"
             >
-              <p class="text-sm text-gray-600 mb-4 leading-relaxed">{{ kpr.subsidi.intro }}</p>
+              <p class="text-sm text-[var(--muted)] mb-4 leading-relaxed">{{ kpr.subsidi.intro }}</p>
               <div class="space-y-3 mb-4">
                 <div
                   v-for="limit in kpr.subsidi.limits"
                   :key="limit.label"
-                  class="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-[#FAF8F5] px-4 py-3"
+                  class="flex items-center justify-between gap-4 rounded-xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3"
                 >
-                  <span class="text-sm text-gray-700 font-medium">{{ limit.label }}</span>
-                  <span class="text-sm font-bold text-[#142B20] whitespace-nowrap">{{ limit.max }}</span>
+                  <span class="text-sm text-[var(--ink)] font-medium">{{ limit.label }}</span>
+                  <span class="text-sm font-bold text-[var(--green-deep)] whitespace-nowrap">{{ limit.max }}</span>
                 </div>
               </div>
-              <div class="rounded-xl bg-[#EBF2ED] p-3.5">
-                <p class="text-xs text-[#142B20]/80 leading-relaxed">{{ kpr.subsidi.note }}</p>
+              <div class="rounded-xl bg-[var(--sage-pale)] p-3.5">
+                <p class="text-xs text-[var(--ink)]/80 leading-relaxed">{{ kpr.subsidi.note }}</p>
               </div>
             </div>
 
           </div>
 
           <!-- Disclaimer -->
-          <div class="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-3.5">
-            <p class="text-xs text-amber-800 leading-relaxed">
-              <strong>Catatan:</strong> {{ kpr.disclaimer }}
+          <div class="mt-5 rounded-xl border border-[var(--line)] bg-[var(--sage-pale)]/50 p-3.5">
+            <p class="text-xs text-[var(--ink)]/80 leading-relaxed">
+              <strong class="text-[var(--ink)]">Catatan:</strong> {{ kpr.disclaimer }}
             </p>
           </div>
 
           <!-- CTA Konsultasi -->
-          <div class="mt-5 flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-gray-100">
-            <p class="text-sm text-gray-600">{{ kpr.consultationCta }}</p>
+          <div class="mt-5 flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[var(--line)]">
+            <p class="text-sm text-[var(--muted)]">{{ kpr.consultationCta }}</p>
             <a
               :href="consultasiLink"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 rounded-full bg-[#142b20] bg-grad-forest px-5 py-2.5 text-sm font-bold text-white hover:bg-grad-forest-hover hover:-translate-y-0.5 hover:shadow-btn-forest-lg active:translate-y-0 shadow-btn-forest transition-all duration-200 whitespace-nowrap"
+              class="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 whitespace-nowrap"
             >
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>

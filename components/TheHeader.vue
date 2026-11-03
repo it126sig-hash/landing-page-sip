@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useContent } from '~/composables/useContent';
 
-const { content } = useContent();
+const { content, wa } = useContent();
 const isMenuOpen = ref(false);
 
 const closeMenu = () => {
@@ -80,7 +80,9 @@ onUnmounted(() => {
           </a>
           <a
             v-else
-            :href="`#${item.id}`"
+            :href="wa('konsultasi')"
+            target="_blank"
+            rel="noopener noreferrer"
             class="nav-cta btn-primary rounded-full px-[18px] py-[12px] text-white text-center flex items-center justify-center gap-2 max-[680px]:mt-2"
             @click="closeMenu"
           >
