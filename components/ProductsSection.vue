@@ -1,21 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useContent } from '~/composables/useContent';
-import { useLightbox } from '~/composables/useLightbox';
 
 const { content, houseTypes } = useContent();
-const { openGallery } = useLightbox();
-
-/** Galeri satu tipe: ilustrasi/fasad dulu, lalu denah. */
-function galleryOf(t) {
-  return [
-    { src: t.gallery[1], alt: `Ilustrasi ${t.name}` },
-    { src: t.gallery[0], alt: `Denah ${t.name}` },
-  ];
-}
-function openTypeGallery(t, start = 0) {
-  openGallery(galleryOf(t), start);
-}
 
 const selectedTypeId = ref(null);
 const modalOpen = ref(false);
@@ -32,125 +19,308 @@ function closeModal() {
 </script>
 
 <template>
-  <section id="tipe" class="scroll-mt-20 bg-off-white py-12 md:py-16">
-    <div class="container mx-auto px-4 md:px-20">
-      <!-- Heading - Hijau -->
-      <h2 class="font-display font-semibold text-3xl md:text-4xl text-center text-[#142b20] mb-10">
-        {{ content.products.title }}
-      </h2>
+  <section class="section types-section" id="tipe">
+    <div class="container">
+      <!-- Section Header -->
+      <div class="section-top reveal">
+        <div class="section-heading">
+          <span class="eyebrow">{{ content.products.eyebrow }}</span>
+          <h2 class="serif">
+            {{ content.products.titleLines?.[0] || 'Pilihan rumah,' }}<br>
+            <em>{{ content.products.titleLines?.[1] || 'pilihan cerita.' }}</em>
+          </h2>
+          <p>{{ content.products.subtitle }}</p>
+        </div>
+        <a class="btn btn-outline" :href="content.products.ctaHref || '#kontak'">
+          {{ content.products.ctaLabel }} <span class="arrow">↗</span>
+        </a>
+      </div>
 
       <!-- House Types Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <!-- Kartu blok: tiap tipe dibungkus wadah putih dengan batas jelas supaya
-             terbaca sebagai tiga produk terpisah, bukan sederet gambar mengambang.
-             `group` dipakai agar gambar ikut bereaksi saat kartu di-hover. -->
-        <article v-for="(t, index) in houseTypes" :key="t.id"
-          class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#ECEAE1] bg-white
-                 shadow-[0_1px_2px_rgba(20,43,32,0.04),0_8px_24px_-16px_rgba(20,43,32,0.25)]
-                 transition-all duration-300
-                 hover:-translate-y-1 hover:border-[#e0d3ae]
-                 hover:shadow-[0_2px_4px_rgba(20,43,32,0.05),0_18px_40px_-20px_rgba(20,43,32,0.35)]">
+      <div class="type-grid">
+        <article
+          v-for="t in houseTypes"
+          :key="t.id"
+          class="type-card reveal"
+        >
+          <!-- Thumbnail -->
+          <div
+            class="type-image"
+            role="button"
+            tabindex="0"
+            :aria-label="`Buka detail ${t.name}`"
+            @click="openType(t.id)"
+            @keydown.enter="openType(t.id)"
+          >
+            <img
+              :src="t.thumbnail || t.gallery?.[0]"
+              :alt="t.name"
+              loading="lazy"
+            />
+            <span class="type-tag">{{ t.category || t.tag }}</span>
+            <span v-if="t.count" class="type-count">{{ t.count }}</span>
+          </div>
 
-          <!-- Image - Rectangle aspect ratio, use 3D render -->
-          <button v-if="t.thumbnail || (t.gallery && t.gallery.length)"
-            type="button"
-            class="relative block w-full aspect-[4/3] overflow-hidden border-b border-[#ECEAE1] bg-[#F5F3EE] cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#c9a84c]"
-            :aria-label="`Perbesar foto ${t.name}`"
-            @click="openTypeGallery(t, 0)">
-            <img :src="t.thumbnail || t.gallery[1] || t.gallery[0]" :alt="t.name" loading="lazy"
-              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
-          </button>
-
-          <!-- Copy -->
-          <div class="flex flex-1 flex-col p-5">
-            <!-- Font judul & deskripsi sengaja ditukar: judul memakai sans (font-body)
-                 karena huruf kapital butuh bentuk yang tegas dan rapat, sedangkan
-                 deskripsi memakai serif (font-display) yang lebih nyaman dibaca
-                 mengalir. Serif Cormorant bertubuh tipis, jadi ukurannya dinaikkan
-                 ke 15px + leading longgar + abu-abu lebih gelap supaya tetap jelas
-                 dibaca — kalau dibiarkan 14px seperti sebelumnya, teksnya samar. -->
-            <!-- Label Subsidi/Komersil dipindah dari atas thumbnail ke samping nama
-                 tipe: render isometrik baru punya subjek (rumah + orang) yang menyentuh
-                 sudut kiri-atas, jadi badge di sana menutupi foto. Di sini badge juga
-                 lebih masuk akal secara bacaan — nama tipe dan kategorinya satu unit
-                 informasi. Barisnya flex-wrap supaya di kolom sempit badge turun rapi,
-                 bukan menekan nama tipe.
-                 Gradasinya emas asli (bukan krem) dengan pita terang di tengah meniru
-                 pantulan logam, ditambah inset highlight 1px di sisi atas untuk kesan
-                 timbul. Aman bersanding dengan CTA emas di bawah karena badge ini jauh
-                 lebih kecil dan tidak berbentuk tombol. -->
-            <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <h3 class="font-body text-base font-bold uppercase tracking-[0.08em] text-[#142b20]">{{ t.name }}</h3>
-              <span v-if="t.tag"
-                class="inline-flex items-center rounded-full px-2.5 py-1
-                       bg-[linear-gradient(135deg,#b8974a_0%,#e3caa8_50%,#b8974a_100%)]
-                       text-[10px] font-bold uppercase tracking-[0.12em] text-[#43350d]
-                       ring-1 ring-[#a98c3f]/60
-                       shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_2px_6px_-2px_rgba(150,120,40,0.5)]">
-                {{ t.tag }}
-              </span>
+          <!-- Content -->
+          <div class="type-content">
+            <div v-if="t.meta && t.meta.length" class="type-meta">
+              <span v-for="m in t.meta" :key="m">{{ m }}</span>
             </div>
-            <p class="mt-2 mb-5 font-display text-[15px] leading-relaxed text-[#5a5f55]">{{ t.subtitle }}</p>
+            <h3>{{ t.headline || t.name }}</h3>
+            <p>{{ t.desc }}</p>
 
-          <!-- Button - Kuning
-               Warna dasarnya tetap #c9a84c, hanya dibuat bergradasi. Dua warnanya
-               sengaja diambil dari hue yang sama dengan beda lightness tipis
-               (#b8974a -> #d9bc63) supaya terbaca "mewah", bukan norak.
-               Kesan timbulnya datang dari inset highlight 1px di sisi atas, dan
-               shadow-nya memakai warna emas yang digelapkan — bukan hitam, karena
-               shadow hitam membuat warna emas terlihat kotor. -->
-          <a @click.prevent="openType(t.id)" href="#"
-            class="group/cta mt-auto inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-black
-                   bg-[linear-gradient(135deg,#b8974a_0%,#d9bc63_100%)]
-                   shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_4px_12px_-4px_rgba(150,120,40,0.55)]
-                   transition-all duration-200
-                   hover:-translate-y-0.5
-                   hover:bg-[linear-gradient(135deg,#c9a84c_0%,#e6cd7a_100%)]
-                   hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_10px_20px_-8px_rgba(150,120,40,0.65)]
-                   active:translate-y-0
-                   active:shadow-[inset_0_2px_4px_rgba(120,95,30,0.35)]
-                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#142b20]/40 focus-visible:ring-offset-2">
-            <span>{{ content.products.detailCtaLabel }}</span>
-            <svg class="h-4 w-4 shrink-0 transition-transform duration-200 group-hover/cta:translate-x-1"
-              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h13M13 6l6 6-6 6" />
-            </svg>
-          </a>
+            <div class="type-bottom">
+              <button
+                type="button"
+                class="btn-detail"
+                @click="openType(t.id)"
+              >
+                {{ content.products.detailCtaLabel }}
+              </button>
+              <a
+                :href="t.waLink"
+                target="_blank"
+                rel="noopener"
+                class="text-link"
+              >
+                {{ content.products.discussCtaLabel }} <span class="arrow">→</span>
+              </a>
+            </div>
           </div>
         </article>
       </div>
-      <!-- Angkanya dijatuhkan ke baris sendiri di bawah kalimat pengantar.
-           Pengantarnya sengaja dikecilkan dan dibuat kapital berjarak supaya
-           berperan sebagai label, sehingga angka harganyalah yang dibaca lebih
-           dulu. Tetap satu <h2> agar struktur judul halaman tidak berubah. -->
-      <h2 class="mb-10 text-center">
-        <span class="block font-body text-xs sm:text-sm font-semibold uppercase tracking-[0.16em] text-charcoal-gray">
-          {{ content.products.priceHeadline }}
-        </span>
-        <!-- Efek metallic gold: gradient dengan pita terang di tengah meniru
-             pantulan cahaya pada logam.
 
-             text-[#8a6d1f] DITULIS DULUAN dengan sengaja sebagai warna cadangan.
-             Kalau background-clip:text tidak didukung, teks jatuh ke emas pekat
-             biasa; tanpa itu, text-transparent akan membuat harganya HILANG
-             sama sekali. Itulah gunanya varian supports-[].
-
-             lining-nums: Cormorant bawaannya memakai angka old-style yang tinggi
-             digitnya naik-turun — cantik untuk teks mengalir, tapi angka harga
-             harus terbaca sekilas. -->
-        <span class="mt-2 inline-block font-display text-3xl sm:text-4xl md:text-5xl font-bold lining-nums
-                     text-[#8a6d1f]
-                     bg-[linear-gradient(115deg,#836619_0%,#9c7c28_38%,#b8974a_55%,#8f7124_78%,#7d611a_100%)]
-                     bg-clip-text supports-[background-clip:text]:text-transparent">
-          {{ content.products.priceRange }}
-        </span>
-        <!-- Garis emas tipis yang memudar di kedua ujung, sebagai penutup visual. -->
-        <span class="mx-auto mt-4 block h-px w-24 bg-[linear-gradient(90deg,transparent,#c9a84c,transparent)]"></span>
-      </h2>
-
+      <!-- Footnote -->
+      <p v-if="content.products.footnote" class="type-footnote">
+        {{ content.products.footnote }}
+      </p>
     </div>
 
+    <!-- Modal Detail Unit -->
     <HouseTypeModal :type="modalOpen ? selectedType : null" @close="closeModal" />
   </section>
 </template>
+
+<style scoped>
+.section {
+  padding: 116px 0;
+}
+
+.types-section {
+  background: var(--sage-pale);
+  position: relative;
+  overflow: hidden;
+}
+
+.types-section::before {
+  content: 'PALASTRI';
+  position: absolute;
+  left: -15px;
+  bottom: -70px;
+  font-family: var(--serif);
+  font-size: clamp(130px, 21vw, 280px);
+  color: rgba(83, 107, 85, 0.045);
+  letter-spacing: -0.08em;
+  pointer-events: none;
+}
+
+.section-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 28px;
+  margin-bottom: 42px;
+}
+
+.section-heading .eyebrow {
+  margin-bottom: 20px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(39px, 4.2vw, 58px);
+  line-height: 1.06;
+}
+
+.section-heading h2 em {
+  color: var(--green);
+  font-style: normal;
+}
+
+.section-heading p {
+  margin: 15px 0 0;
+  max-width: 410px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  position: relative;
+}
+
+.type-card {
+  overflow: hidden;
+  border-radius: 17px;
+  background: var(--white);
+  box-shadow: 0 10px 35px rgba(39, 54, 45, 0.055);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.type-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.type-image {
+  height: 285px;
+  position: relative;
+  overflow: hidden;
+  background: #d5dfd1;
+  cursor: pointer;
+}
+
+.type-image img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.6s;
+}
+
+.type-card:hover .type-image img {
+  transform: scale(1.04);
+}
+
+.type-tag {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  padding: 8px 12px;
+  border-radius: 99px;
+  background: rgba(255, 254, 250, 0.92);
+  color: var(--green-deep);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.type-count {
+  position: absolute;
+  right: 18px;
+  bottom: 17px;
+  color: white;
+  font-family: var(--serif);
+  font-size: 13px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.type-content {
+  padding: 24px 25px 23px;
+}
+
+.type-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.type-meta span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.type-meta span:not(:last-child)::after {
+  content: '•';
+  margin-left: 12px;
+  opacity: 0.5;
+}
+
+.type-content h3 {
+  margin: 13px 0 8px;
+  font-family: var(--serif);
+  font-size: 29px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.type-content p {
+  margin: 0;
+  max-width: 430px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.type-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 22px;
+  padding-top: 17px;
+  border-top: 1px solid var(--line);
+}
+
+.btn-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-detail:hover {
+  background: var(--white);
+  border-color: var(--green);
+  color: var(--green-deep);
+  transform: translateY(-1px);
+}
+
+.type-footnote {
+  margin: 24px 0 0;
+  color: #778078;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+@media (max-width: 680px) {
+  .types-section {
+    padding: 77px 0;
+  }
+  .section-top {
+    display: block;
+    margin-bottom: 28px;
+  }
+  .section-top > .btn {
+    margin-top: 20px;
+  }
+  .type-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .type-image {
+    height: 240px;
+  }
+  .type-content {
+    padding: 20px;
+  }
+  .type-content h3 {
+    font-size: 26px;
+  }
+}
+</style>

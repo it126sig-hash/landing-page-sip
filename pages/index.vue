@@ -63,17 +63,24 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <TheHeader />
-    <main>
-      <HeroSection />
-      <TrustStrip />
-      <KprPartnerStrip />
-      <AboutSection />
-      <ProductsSection />
-      <ReasonsCardsSection />
-      <FaqSection />
-      <FinalCtaSection />
-    </main>
+    <!-- Section Container 1 Layar Penuh di Desktop & Tablet Landscape (lg) -->
+    <div class="lg:h-screen lg:max-h-[100dvh] lg:flex lg:flex-col lg:justify-between lg:overflow-hidden">
+      <TheHeader class="lg:flex-shrink-0" />
+      <main class="lg:flex-1 lg:min-h-0 lg:flex lg:flex-col lg:justify-between">
+        <HeroSection class="lg:flex-1 lg:min-h-0" />
+        <div class="lg:flex-shrink-0">
+          <TrustStrip />
+          <KprPartnerStrip />
+        </div>
+      </main>
+    </div>
+
+    <!-- Section Lanjutan (Diakses dengan Scroll) -->
+    <AboutSection />
+    <ProductsSection />
+    <WhySection />
+    <FaqSection />
+    <FinalCtaSection />
     <TheFooter />
   </div>
 </template>

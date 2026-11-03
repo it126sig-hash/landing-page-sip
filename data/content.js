@@ -74,10 +74,16 @@ export default {
   about: {
     eyebrow: 'Tentang Sanggar Indah Palastri',
     title: 'Bukan sekadar rumah. Tempat kehidupan dimulai.',
+    headlineLines: ['Bukan sekadar rumah.', 'Tempat kehidupan dimulai.'],
     description: [
       { text: 'Sanggar Indah Palastri hadir sebagai pilihan hunian bagi keluarga yang ingin membangun masa depan dari tempat yang nyaman. Kami percaya, rumah yang baik bukan hanya tentang ruang dan bangunan, tetapi juga tentang kesempatan untuk tumbuh dan menciptakan kenangan.' },
     ],
     sub: 'Dikembangkan sebagai bagian dari Sanggar Indah Group, Palastri membawa semangat untuk menghadirkan hunian yang relevan dengan kebutuhan kehidupan masa kini.',
+    signature: {
+      mark: 'P',
+      title: 'Sanggar Indah Palastri',
+      subtitle: 'Hunian untuk cerita baru',
+    },
     numberBadge: { number: '01', label: 'Awal cerita' },
     photos: {
       main: '/assets/images/palastri/about-main.jpg',
@@ -97,6 +103,7 @@ export default {
   why: {
     eyebrow: 'Alasan untuk memilih',
     title: 'Kenapa memulai di Palastri?',
+    titleLines: ['Kenapa memulai', 'di Palastri?'],
     sub: 'Hal-hal sederhana yang membuat sebuah rumah terasa tepat untuk menjadi tempat pulang.',
     cta: 'Bicarakan kebutuhanmu',
     items: [
@@ -111,30 +118,9 @@ export default {
 
   houseTypes: [
     {
-      id: '22-60',
-      name: 'Tipe 22/60',
-      lb: '22',
-      lt: '60',
-      kt: '1',
-      km: '1',
-      tag: 'Subsidi',
-      category: 'Pilihan subsidi',
-      headline: 'Awal baik untuk dimiliki.',
-      desc: 'Pilihan rumah yang mengutamakan fungsi dan kenyamanan, untuk membantu mewujudkan rencana memiliki rumah.',
-      meta: ['Fungsional', 'Langkah pertama'],
-      thumbnail: '/assets/images/palastri/rumah/2260-3d.png',
-      gallery: [
-        '/assets/images/palastri/rumah/2260-denah.jpg',
-        '/assets/images/palastri/rumah/2260-3d.png',
-      ],
-      facades: [
-        { src: '/assets/images/palastri/rumah/2260-3d.png', label: 'Perspektif' },
-      ],
-      specsOverride: [],
-    },
-    {
       id: '31-72',
       name: 'Tipe 31/72',
+      count: '01 / Hunian',
       lb: '31',
       lt: '72',
       kt: '2',
@@ -154,14 +140,41 @@ export default {
       ],
       specsOverride: [],
     },
+    {
+      id: '22-60',
+      name: 'Tipe 22/60',
+      count: '02 / Hunian',
+      lb: '22',
+      lt: '60',
+      kt: '1',
+      km: '1',
+      tag: 'Subsidi',
+      category: 'Pilihan subsidi',
+      headline: 'Awal baik untuk dimiliki.',
+      desc: 'Pilihan rumah yang mengutamakan fungsi dan kenyamanan, untuk membantu mewujudkan rencana memiliki rumah.',
+      meta: ['Fungsional', 'Langkah pertama'],
+      thumbnail: '/assets/images/palastri/rumah/2260-3d.png',
+      gallery: [
+        '/assets/images/palastri/rumah/2260-denah.jpg',
+        '/assets/images/palastri/rumah/2260-3d.png',
+      ],
+      facades: [
+        { src: '/assets/images/palastri/rumah/2260-3d.png', label: 'Perspektif' },
+      ],
+      specsOverride: [],
+    },
   ],
 
-  // Interim fallback for ProductsSection until Fase C
   products: {
-    title: 'Pilihan Rumah',
+    eyebrow: 'Temukan yang paling sesuai',
+    title: 'Pilihan rumah, pilihan cerita.',
+    titleLines: ['Pilihan rumah,', 'pilihan cerita.'],
+    subtitle: 'Setiap keluarga punya rencana dan kebutuhan yang berbeda. Temukan pilihan hunian yang paling sesuai untuk langkah berikutnya.',
+    ctaLabel: 'Tanya pilihan rumah',
+    ctaHref: '#kontak',
     detailCtaLabel: 'Lihat Detail',
-    priceHeadline: '',
-    priceRange: '',
+    discussCtaLabel: 'Diskusikan',
+    footnote: '*Visual dan deskripsi tipe pada mockup ini bersifat ilustrasi. Harga, tipe, spesifikasi, dan ketersediaan unit perlu disesuaikan dengan data resmi proyek.',
   },
 
   banks: [

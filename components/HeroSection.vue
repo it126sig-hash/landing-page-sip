@@ -145,11 +145,17 @@ const { content } = useContent();
 .hero-visual {
   position: relative;
   min-width: 0;
+  width: 100%;
+  max-width: 440px;
+  margin-left: auto;
 }
 
 .hero-photo-wrap {
   position: relative;
+  width: 100%;
+  max-width: 440px;
   height: 535px;
+  aspect-ratio: 0.82;
   border-radius: 48% 48% 20px 20px / 36% 36% 20px 20px;
   overflow: hidden;
   background: #cbd6c4;
@@ -285,6 +291,45 @@ const { content } = useContent();
   inset: 47px;
 }
 
+@media (min-width: 1024px) {
+  .hero {
+    padding: clamp(10px, 1.8vh, 24px) 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-grid {
+    height: 100%;
+    min-height: 0;
+    align-items: center;
+    align-content: center;
+  }
+
+  .hero-visual {
+    width: auto;
+    max-width: 440px;
+    margin-left: auto;
+  }
+
+  .hero-photo-wrap {
+    width: auto;
+    max-width: 440px;
+    height: clamp(500px, 58vh, 535px);
+    aspect-ratio: 0.82;
+    max-height: 100%;
+  }
+
+  .hero-lead {
+    margin-top: clamp(14px, 1.8vh, 22px);
+    margin-bottom: clamp(16px, 2vh, 24px);
+  }
+
+  .hero-note {
+    margin-top: clamp(16px, 2.5vh, 32px);
+  }
+}
+
 @media (max-width: 900px) {
   .hero-grid {
     gap: 25px;
@@ -292,6 +337,7 @@ const { content } = useContent();
   }
   .hero-photo-wrap {
     height: 470px;
+    aspect-ratio: auto;
   }
   .hero h1 {
     font-size: clamp(48px, 7vw, 68px);
@@ -329,9 +375,12 @@ const { content } = useContent();
     margin-top: 25px;
   }
   .hero-visual {
+    max-width: 100%;
     margin: 0 9px 0 17px;
   }
   .hero-photo-wrap {
+    max-width: 100%;
+    aspect-ratio: auto;
     height: min(112vw, 470px);
     border-radius: 47% 47% 15px 15px / 28% 28% 15px 15px;
   }

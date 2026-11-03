@@ -132,12 +132,12 @@ onBeforeUnmount(() => observer?.disconnect());
 <template>
   <div v-if="items.length">
     <div class="mb-3 flex items-center gap-3">
-      <h4 class="font-display text-size-4 text-forest-deep">Fasad</h4>
+      <h4 class="font-serif text-lg font-semibold text-ink">Fasad</h4>
       <!-- Petunjuk hanya ditampilkan kalau memang ada yang bisa digeser. -->
-      <p v-if="items.length > 1" class="font-body text-xs text-charcoal-gray">
+      <p v-if="items.length > 1" class="font-body text-xs text-muted">
         Geser untuk melihat sudut lain
       </p>
-      <span class="h-px flex-1 bg-[linear-gradient(90deg,#e0d3ae,transparent)]"></span>
+      <span class="h-px flex-1 bg-line"></span>
 
       <!-- Panah hanya di layar besar: di HP orang menggeser langsung dengan jari,
            dan dua tombol kecil di sana justru memakan ruang gambar. -->
@@ -149,7 +149,7 @@ onBeforeUnmount(() => observer?.disconnect());
           type="button"
           :aria-label="nav.label"
           :disabled="nav.disabled"
-          class="flex h-8 w-8 items-center justify-center rounded-full border border-cream-light bg-white text-forest-deep transition-colors hover:border-orange/40 hover:text-orange disabled:opacity-35 disabled:hover:border-cream-light disabled:hover:text-forest-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-deep/30"
+          class="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-green hover:text-green disabled:opacity-35 disabled:hover:border-line disabled:hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green/30"
           @click="step(nav.d)"
         >
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -169,7 +169,7 @@ onBeforeUnmount(() => observer?.disconnect());
          bisa digeser dengan jari, roda, maupun keyboard. -->
     <div
       ref="scroller"
-      class="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-deep/30"
+      class="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green/30"
       :tabindex="items.length > 1 ? 0 : -1"
       role="group"
       :aria-label="`Galeri fasad ${typeName}`"
@@ -181,7 +181,7 @@ onBeforeUnmount(() => observer?.disconnect());
         v-for="(img, i) in items"
         :key="img.src"
         type="button"
-        class="group relative block shrink-0 basis-[88%] snap-start overflow-hidden rounded-xl border border-cream-light bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-deep/30 sm:basis-[62%]"
+        class="group relative block shrink-0 basis-[88%] snap-start overflow-hidden rounded-xl border border-line bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green/30 sm:basis-[62%]"
         :aria-label="`Perbesar ${img.label.toLowerCase()} ${typeName}`"
         @click="openAt(i)"
       >
@@ -193,10 +193,10 @@ onBeforeUnmount(() => observer?.disconnect());
           loading="lazy"
           class="aspect-video w-full object-cover transition-transform duration-500 motion-reduce:transition-none group-hover:scale-[1.04] motion-reduce:group-hover:scale-100"
         />
-        <span class="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 font-body text-[11px] font-bold uppercase tracking-wide text-forest-deep shadow-sm ring-1 ring-cream-light">
+        <span class="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 font-body text-[11px] font-bold uppercase tracking-wide text-green-deep shadow-sm ring-1 ring-line">
           {{ img.label }}
         </span>
-        <span class="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-forest-deep opacity-0 shadow-sm ring-1 ring-cream-light transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+        <span class="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-green opacity-0 shadow-sm ring-1 ring-line transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5M11 8v6M8 11h6" />
@@ -214,7 +214,7 @@ onBeforeUnmount(() => observer?.disconnect());
         type="button"
         tabindex="-1"
         class="h-[7px] rounded-full transition-all duration-300 motion-reduce:transition-none"
-        :class="i === activeIndex ? 'w-5 bg-[#c9a84c]' : 'w-[7px] bg-cream-light hover:bg-sage-mist'"
+        :class="i === activeIndex ? 'w-5 bg-green' : 'w-[7px] bg-paper-deep hover:bg-green-soft'"
         @click="scrollTo(i)"
       />
     </div>

@@ -84,6 +84,14 @@ const { content } = useContent();
   font-size: 9px;
 }
 
+@media (min-width: 1024px) {
+  .trust-inner {
+    min-height: 76px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
 @media (max-width: 680px) {
   .trust-inner {
     padding: 22px 0;
