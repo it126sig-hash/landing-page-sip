@@ -15,8 +15,8 @@ const kpr = content.kprRequirements;
 // Logo bank diturunkan dari `title` ("Syarat KPR BCA" / "Syarat KPR BTN")
 const bankLogo = computed(() => {
   const t = props.title || '';
-  if (/\bBCA\b/i.test(t)) return { src: '/assets/images/bank/bca.webp', alt: 'Logo Bank BCA' };
-  if (/\bBTN\b/i.test(t)) return { src: '/assets/images/bank/btn.webp', alt: 'Logo Bank BTN' };
+  if (/\bBCA\b/i.test(t)) return { src: withBase('/assets/images/bank/bca.webp'), alt: 'Logo Bank BCA' };
+  if (/\bBTN\b/i.test(t)) return { src: withBase('/assets/images/bank/btn.webp'), alt: 'Logo Bank BTN' };
   return null;
 });
 
