@@ -7,10 +7,10 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 ## Ringkasan Proyek & Status Branch
 
 - **Git Branch:** `redesign-palastri` (dibuat dari `master` pada commit `dd954519c3977d0b36b0c17fb75dd388f582f44c`)
-- **Status Sesi:** Fase E selesai diverifikasi QA (Floating WA, Header Konsultasi, Reskin Modals, Cleanup Aset Yatim), Fase F siap dikerjakan.
+- **Status Sesi:** Fase E, Polish Desain, dan Refactoring HouseTypeModal (Compact Single-Stage) selesai diverifikasi QA (PASS), Fase F siap dikerjakan.
 - **Tujuan Utama:**
   1. Transformasi identitas Parahyangan → Palastri (Arjasari, Kab. Bandung).
-  2. Redesign visual Natural Scandinavian × Modern Editorial (sage green, warm neutral, DM Sans, Fraunces).
+  2. Redesign visual Natural Scandinavian × Modern Editorial (sage green, warm neutral, Dream Orphans, Poppins).
   3. Content-Driven UI (100% teks di `data/content.js` dan `useContent.js`, 2 tipe rumah: 22/60 Subsidi & 31/72 Komersial).
 
 ---
@@ -24,7 +24,9 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 | **C** | **Tentang, Pilihan Rumah (2 kartu + modal), Kenapa** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1280/768/375, modal interaktif, 0 JS error, 0 404) |
 | **D** | **Lokasi, FAQ Accordion, Kontak Form, Footer** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1440/1280/768/375, accordion 1-item, form kontak inline, 0 error/404) |
 | **E** | **Floating WA, Reskin Modal, Cleanup Aset Yatim** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1440/1280/768/375, FAB WA Palastri, Header Konsultasi WA, Reskin KPR/MGM/Referral modals, 0 broken asset / 404) |
-| **F** | **QA Penuh & Dokumentasi Final** | **siap dikerjakan** | `qa-agent` & `doc-agent` | Siap dieksekusi setelah Fase E tuntas (Audit menyeluruh fungsionalitas, SEO, performa, dan final handoff docs) |
+| **Polish** | **Tipografi, Header Sticky, Logo SIG, WhySection USP** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build PASS, Playwright Desktop 1440x900 & Mobile 390x844/375x812 PASS, 0 console error, 0 404, sticky header verified, pin maps skipped) |
+| **Modal Compact** | **Refactor HouseTypeModal (Compact Single-Stage)** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Zero Desktop Overflow 1280x720 516px, Mobile 375x667 simetris, 9 spesifikasi berbingkai stroke 1.7, 0 error/404) |
+| **F** | **QA Penuh & Dokumentasi Final** | **siap dikerjakan** | `qa-agent` & `doc-agent` | Siap dieksekusi setelah Fase E & Polish tuntas (Audit menyeluruh fungsionalitas, SEO, performa, dan final handoff docs) |
 
 ---
 
@@ -197,6 +199,69 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 
 ---
 
+## Rincian Eksekusi Polish Tipografi, Header Sticky, Logo SIG & WhySection USP (2026-11-03)
+
+### Checklist Task Builder (`frontend-agent`):
+- [x] **Tipografi Brand & Desain:**
+  - [x] Pendaftaran font lokal Dream Orphans (`Dream Orphans.otf`, `Dream Orphans Bd.otf`, `Dream Orphans It.otf`, `Dream Orphans Bd It.otf`) di `public/assets/fonts/` via `@font-face` di `assets/css/base.css` dengan `font-display: swap`.
+  - [x] Pemuatan Google Fonts Poppins (weights 300, 400, 500, 600, 700) di `nuxt.config.ts`.
+  - [x] Konfigurasi font family di `tailwind.config.js`: `display` & `serif` diarahkan ke `'Dream Orphans'`, `body` & `sans` diarahkan ke `'Poppins'`.
+  - [x] Konfigurasi tokens CSS di `assets/css/tokens.css`: `--serif: 'Dream Orphans', Georgia, sans-serif;` dan `--sans: 'Poppins', sans-serif;`.
+- [x] **TheHeader & Sticky Navigation Global:**
+  - [x] Penambahan logo SIG (`content.meta.logoGroupDark` / `logo-sig-dark.png`) berdampingan dengan logo Palastri dan dibatasi garis pemisah vertikal (`h-5 sm:h-6 w-px bg-[var(--line)]`).
+  - [x] Perbaikan posisi sticky navigation secara global: memindahkan `<TheHeader />` ke root level `pages/index.vue` di luar pembungkus fold desktop 1-layar, sehingga navbar selalu menempel di `top: 0` saat pengguna menggulir ke seluruh section halaman.
+  - [x] Responsivitas mobile brand lockup disesuaikan agar tidak overflow pada viewport sempit (375px - 390px).
+- [x] **WhySection (Keunggulan / USP Card):**
+  - [x] Transformasi icon list menjadi 5 list item dummy USP dengan gambar representatif di sisi kanan:
+    1. `01` — Akses Dekat Pintu Tol (`/assets/images/palastri/about-small.jpg`)
+    2. `02` — Bebas Banjir & Udara Asri (`/assets/images/palastri/about-main.jpg`)
+    3. `03` — Fasilitas Kawasan Mandiri (`/assets/images/palastri/hero.jpg`)
+    4. `04` — Keamanan 24 Jam & One Gate (`/assets/images/palastri/rumah/3172-3d.jpg`)
+    5. `05` — Nilai Investasi Menjanjikan (`/assets/images/palastri/rumah/2260-3d.png`)
+  - [x] Konfigurasi data terpusat di `data/content.js` pada `content.why.items`.
+  - [x] Penanganan mapping path gambar dengan resolusi base URL di `composables/useContent.js` (`withBase`).
+  - [x] Styling thumbnail gambar USP (`.why-visual`, `.why-thumb`) dengan border halus, radius 14px (desktop) / 12px (mobile), shadow lembut, dan fallback simbol bila gambar tidak didefinisikan.
+- [x] **LocationSection:**
+  - [x] Pinpoint koordinat kustom pada maps di-skip sesuai arahan user.
+
+---
+
+## Rincian Eksekusi Refactoring Modal Detail Unit Compact (2026-11-03)
+
+### Acuan Desain & Dokumen:
+- **Komponen:** `components/HouseTypeModal.vue`
+- **Spesifikasi Acuan:** `docs/00-Design Guide Modal Detail Unit (Compact).md`
+- **Rencana Kerja:** `plan-modal-detail-unit-compact.md`
+- **Status Implementasi:** **selesai (PASS QA)**
+
+### Checklist Task Builder (`frontend-agent`):
+- [x] **Struktur 3-Zona Layout Kokoh (Rigid 3-Zone Architecture):**
+  - [x] **Zona 1 - Header Pinned Top (1 Baris):**
+    - Judul tipe rumah (`font-serif`, Dream Orphans `text-ink` 22px mobile / 24px desktop).
+    - 4 chip spesifikasi ringkas bernuansa sage (`bg-sage-pale text-green-deep border border-line rounded-full px-2.5 py-1 text-xs font-semibold`): Luas Bangunan (LB), Luas Tanah (LT), Kamar Tidur (KT), Kamar Mandi (KM) dengan icon mini SVG proporsional.
+    - Kontainer chip horizontal `overflow-x-auto no-scrollbar` (mencegah line wrap pada mobile).
+    - Tombol tutup bulat 32px (`h-8 w-8 rounded-full border border-line bg-white text-ink`) dengan hover halus Palastri (`hover:border-green hover:bg-sage-pale hover:text-green-deep`).
+  - [x] **Zona 2 - Body Fleksibel (Single Visual Stage & Panel Spesifikasi):**
+    - Kontainer `p-3 sm:p-4 space-y-2.5 overflow-y-auto overscroll-contain flex-1`.
+    - **Tab Segmented Control:** Wadah `bg-paper-deep/60 border border-line p-1 rounded-xl flex gap-1` untuk transisi instan antar slide fasad (`Tampak Depan`, `Perspektif`) dan denah arsitektur (`Denah`).
+    - **Single Visual Stage:** Wadah panggung visual tunggal berketinggian 280px di desktop (`sm:h-[280px]`) dan 220px di mobile (`h-[220px]`). Gambar fasad dengan `object-cover` dan denah arsitektur dengan `object-contain p-2 bg-white` agar skala denah tidak terpotong tepi stage.
+    - **Caption Pill & Navigasi Panah Stage:** Pill caption semitransparan `bg-green-deep/85` di kiri atas dan tombol panah bolak-balik melingkar (*cyclic carousel*) di kanan bawah.
+    - **Integrasi Lightbox:** Klik pada visual stage membuka penampil gambar resolusi tinggi via composable `useLightbox()` (`openLightboxFromStage()`).
+    - **Panel Spesifikasi Berbingkai (Single Bordered Panel):** 1 wadah berbingkai terpadu (`rounded-xl border border-line bg-white p-3 sm:p-3.5 shadow-xs`) dengan 9 item teknis (Pondasi, Struktur, Dinding, Lantai, Atap, Kusen, Pintu, Listrik, Air) dilengkapi icon outline SVG warna `text-green` bergaris konsisten `stroke-width="1.7"`.
+    - **Responsivitas Grid Spesifikasi:** 3 kolom di desktop / lebar ≥ 520px (`min-[520px]:grid-cols-3 gap-x-3 gap-y-2.5`), dan 2 kolom di mobile (`grid-cols-2`) dengan item ke-9 (Air) membentang 2 kolom penuh (`last:col-span-2 min-[520px]:last:col-span-1`) agar baris penutup tetap simetris.
+  - [x] **Zona 3 - Footer Pinned Bottom (Action & Compliance):**
+    - Terkunci di dasar modal (`bg-white border-t border-line shrink-0 px-4 py-2.5 sm:px-5 sm:py-3`).
+    - Tombol WhatsApp CTA dengan pesan prefilled otomatis berbasis tipe unit via `wa('type', { type: type.name })`.
+    - Catatan perlindungan konsumen (*"Konsumen tidak dapat merubah/merenovasi bangunan sebelum proses serah terima unit"*).
+    - Responsif: Bersebelahan 1 baris di desktop (`min-[520px]`), dan bertumpuk vertikal dengan tombol WhatsApp membentang full-width di mobile.
+- [x] **Aksesibilitas & Interaksi Keyboard:**
+  - [x] Kontainer modal mengimplementasikan `role="dialog"`, `aria-modal="true"`, dan dynamic `aria-label`.
+  - [x] Segmented control menggunakan `role="tablist"` dan `role="tab"` dengan aria state dinamis.
+  - [x] Pintasan keyboard: Tombol `Escape` menutup modal, tombol panah `ArrowLeft` & `ArrowRight` berpindah slide visual bolak-balik secara melingkar (*cyclic*).
+  - [x] Body scroll locking aktif saat modal dibuka dan dinonaktifkan kembali saat modal ditutup.
+
+---
+
 ## Log Debugging, Temuan & Catatan Teknis
 
 ### Log Verifikasi Fase A (`qa-agent` - 2026-10-30):
@@ -329,6 +394,49 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
     - [mobile-375-modal-mgm.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/mobile-375-modal-mgm.png)
     - [mobile-375-form-and-fab.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-e/mobile-375-form-and-fab.png)
 
+### Log Verifikasi Tipografi, Header Sticky, Logo SIG & WhySection USP (`qa-agent` - 2026-11-03):
+- **Build test:** PASS (`npm run build` selesai tanpa error).
+- **Playwright multi-viewport browser test:**
+  - PASS pada Desktop (1440x900).
+  - PASS pada Mobile Modern (390x844 - iPhone 12/13/14).
+  - PASS pada Mobile Standar (375x812 - iPhone X/Mini).
+- **Runtime console & network:**
+  - 0 JavaScript console error.
+  - 0 network request gagal / 404 (seluruh font lokal Dream Orphans, font Poppins dari Google Fonts CDN, gambar USP WhySection, dan logo SIG termuat dengan HTTP 200 OK).
+- **Verifikasi Sticky Header Global:**
+  - `<TheHeader />` terbukti secara konsisten menempel di `top: 0px` saat scroll dari Hero, About, Products, Why, Location, FAQ, hingga Footer baik pada Desktop (1440x900) maupun Mobile (390x844 & 375x812).
+  - Logo SIG dan logo Palastri bersanding rapi dengan pemisah vertikal tanpa layout shift.
+- **Verifikasi Tipografi & Font-face:**
+  - Dream Orphans aktif pada heading display / serif (`.serif`, `h1`, `h2`, `h3`).
+  - Poppins aktif pada body text, tombol, dan elemen navigasi.
+- **Verifikasi WhySection 5 USP Item:**
+  - Seluruh 5 poin USP tampil dengan urutan penomoran 01 s/d 05, copy deskripsi padat, dan gambar thumbnail di sebelah kanan dengan aspect ratio rapi dan responsif.
+- **Catatan Pin Maps:** Fitur custom pin maps pada LocationSection di-skip sesuai arahan user.
+
+### Log Verifikasi Refactoring HouseTypeModal Compact (`qa-agent` - 2026-11-03):
+- **Build test:** PASS (`npm run build` selesai tanpa error, Nitro output terkompilasi bersih).
+- **Playwright multi-viewport browser test:** PASS pada Desktop Standar (1280x720) dan Mobile (375x667).
+- **Verifikasi Zero Desktop Overflow (1280x720):**
+  - Modal muat 100% dalam satu layar desktop 720p tanpa scrollbar internal vertikal.
+  - Nilai DOM terukur: `scrollHeight === clientHeight = 516px` (0px internal overflow, margin aman ~160px di bawah batas `max-h-[94vh]`).
+  - Tiga zona layout (Header 1 baris, Single Visual Stage 280px + Panel 9 Spesifikasi berbingkai, Footer pinned WhatsApp CTA) tampil proporsional tanpa desak-desakan.
+- **Verifikasi Mobile Simetris (375x667):**
+  - Header: 4 chip sage (LB, LT, KT, KM) tidak wrapping baris dan dapat digulir horizontal mulus via `overflow-x-auto no-scrollbar`.
+  - Visual Stage: Ketinggian adaptif 220px (`h-[220px]`), gambar denah arsitektur tampil utuh tanpa terpotong (`object-contain p-2 bg-white`).
+  - Panel Spesifikasi: Grid 2 kolom rapi dengan item ke-9 (Air) membentang 2 kolom penuh (`last:col-span-2`), menciptakan tata letak simetris.
+  - Footer Pinned: Tombol WhatsApp membentang selebar layar (*full-width button*) dengan catatan serah terima di bawahnya, terkunci di dasar layar ponsel.
+- **Verifikasi Fungsional, Lightbox & Navigasi Keyboard:**
+  - Tab segmented control responsif, transisi slide instan antara Tampak Depan, Perspektif, dan Denah.
+  - Lightbox integration: Klik pada visual stage sukses mengeksekusi `openLightboxFromStage()`, membuka penampil gambar resolusi tinggi dengan kontrol zoom interaktif.
+  - Cyclic carousel navigation: Tombol panah kiri/kanan pada panggung visual berfungsi melingkar bolak-balik tanpa batas ujung.
+  - Aksesibilitas keyboard: Tombol `Escape` menutup modal dan mengembalikan fokus; tombol `ArrowLeft` / `ArrowRight` berpindah slide visual secara melingkar.
+- **Runtime console & network:**
+  - 0 JavaScript console error.
+  - 0 network error / asset 404.
+- **Tautan bukti visual tangkapan layar (`docs/qa-evidence/`):**
+  - Desktop 1280x720: [modal-compact-desktop-1280.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/modal-compact-desktop-1280.png)
+  - Mobile 375x667: [modal-compact-mobile-375.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/modal-compact-mobile-375.png)
+
 ### Log Awal:
 - 2026-10-30: Branch `redesign-palastri` dibuat dari `master` (commit `dd954519c3977d0b36b0c17fb75dd388f582f44c`).
 - Persiapan aset: file denah tipe 31/72 resolusi rendah (300x430 px) dicatat sebagai debt visual untuk diperbarui bila klien mengirim versi HQ.
@@ -338,7 +446,7 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 
 ## Konteks untuk Fase F (QA Penuh & Dokumentasi Final)
 
-- **Status:** **Siap dikerjakan** (Seluruh implementasi fitur dan visual Fase A, B, C, D, dan E selesai 100% dan terverifikasi PASS).
+- **Status:** **Siap dikerjakan** (Seluruh implementasi fitur dan visual Fase A, B, C, D, E, Polish Desain, dan Refactoring Modal Compact selesai 100% dan terverifikasi PASS).
 - **Target Pekerjaan Fase F:**
   1. **Audit QA Menyeluruh & Regresi Lintas Browser/Viewport:**
      - Pengujian end-to-end dari atas ke bawah (Header → Hero → Trust → KPR → About → Products → Why → Location → FAQ → Final CTA → Footer).

@@ -63,9 +63,10 @@ onUnmounted(() => {
 
 <template>
   <div>
+    <TheHeader />
+
     <!-- Section Container 1 Layar Penuh di Desktop & Tablet Landscape (lg) -->
-    <div class="lg:h-screen lg:max-h-[100dvh] lg:flex lg:flex-col lg:justify-between lg:overflow-hidden">
-      <TheHeader class="lg:flex-shrink-0" />
+    <div class="lg:min-h-[calc(100dvh-76px)] lg:flex lg:flex-col lg:justify-between">
       <main class="lg:flex-1 lg:min-h-0 lg:flex lg:flex-col lg:justify-between">
         <HeroSection class="lg:flex-1 lg:min-h-0" />
         <div class="lg:flex-shrink-0">

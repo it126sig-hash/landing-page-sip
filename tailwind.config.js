@@ -17,10 +17,10 @@ export default {
         line: 'var(--line)',
       },
       fontFamily: {
-        display: ['Fraunces', 'Georgia', 'serif'],
-        serif: ['Fraunces', 'Georgia', 'serif'],
-        body: ['DM Sans', 'Arial', 'sans-serif'],
-        sans: ['DM Sans', 'Arial', 'sans-serif'],
+        display: ['"Dream Orphans"', 'Georgia', 'sans-serif'],
+        serif: ['"Dream Orphans"', 'Georgia', 'sans-serif'],
+        body: ['Poppins', 'sans-serif'],
+        sans: ['Poppins', 'sans-serif'],
       },
       fontSize: {
         'size-1': ['4.125rem',   { lineHeight: '1.05', letterSpacing: '-0.02em', fontWeight: '800' }],

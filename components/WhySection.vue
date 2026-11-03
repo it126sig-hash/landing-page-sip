@@ -32,7 +32,16 @@ const { content } = useContent();
             <h3>{{ item.title }}</h3>
             <p>{{ item.desc }}</p>
           </div>
-          <span class="why-symbol" aria-hidden="true">{{ item.symbol }}</span>
+          <div class="why-visual">
+            <img
+              v-if="item.image"
+              :src="item.image"
+              :alt="item.title"
+              class="why-thumb"
+              loading="lazy"
+            />
+            <span v-else class="why-symbol" aria-hidden="true">{{ item.symbol }}</span>
+          </div>
         </article>
       </div>
     </div>
@@ -87,9 +96,9 @@ const { content } = useContent();
 
 .why-item {
   display: grid;
-  grid-template-columns: 58px 1fr 42px;
-  gap: 18px;
-  align-items: start;
+  grid-template-columns: 48px 1fr 80px;
+  gap: 20px;
+  align-items: center;
   padding: 27px 0;
   border-bottom: 1px solid var(--line);
 }
@@ -114,6 +123,26 @@ const { content } = useContent();
   color: var(--muted);
   font-size: 11px;
   line-height: 1.8;
+}
+
+.why-visual {
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+  box-shadow: 0 4px 14px rgba(39, 54, 45, 0.06);
+  flex-shrink: 0;
+}
+
+.why-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .why-symbol {
@@ -149,15 +178,20 @@ const { content } = useContent();
     font-size: 48px;
   }
   .why-item {
-    grid-template-columns: 38px 1fr 34px;
-    gap: 10px;
-    padding: 22px 0;
+    grid-template-columns: 32px 1fr 64px;
+    gap: 12px;
+    padding: 20px 0;
   }
   .why-no {
     font-size: 18px;
   }
   .why-item h3 {
-    font-size: 20px;
+    font-size: 19px;
+  }
+  .why-visual {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
   }
   .why-symbol {
     width: 32px;

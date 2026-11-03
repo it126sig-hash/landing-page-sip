@@ -33,7 +33,7 @@ onUnmounted(() => {
     <div class="container nav h-[76px] max-[680px]:h-[67px] flex items-center justify-between">
       <!-- Brand -->
       <a
-        class="brand inline-flex items-center gap-[11px] min-w-0"
+        class="brand inline-flex items-center gap-2 sm:gap-2.5 min-w-0"
         href="#beranda"
         :aria-label="`${content.meta.projectName} — Beranda`"
         @click="closeMenu"
@@ -41,13 +41,19 @@ onUnmounted(() => {
         <img
           :src="content.meta.logo"
           :alt="`Logo ${content.meta.projectName}`"
-          class="h-9 w-auto object-contain shrink-0"
+          class="h-7 sm:h-9 w-auto object-contain shrink-0"
         />
-        <span class="brand-name grid gap-0.5 leading-none">
-          <strong class="text-[13px] tracking-[-0.04em] text-[var(--ink)] font-bold">
+        <span class="h-5 sm:h-6 w-px bg-[var(--line)] shrink-0 self-center" aria-hidden="true"></span>
+        <img
+          :src="content.meta.logoGroupDark"
+          :alt="`Logo ${content.meta.developer}`"
+          class="h-5 sm:h-6 w-auto object-contain shrink-0"
+        />
+        <span class="brand-name grid gap-0.5 leading-none min-w-0">
+          <strong class="text-[11px] sm:text-[13px] tracking-[-0.03em] text-[var(--ink)] font-bold truncate">
             {{ content.meta.projectName }}
           </strong>
-          <small class="text-[8px] tracking-[0.15em] uppercase text-[var(--muted)]">
+          <small class="text-[7.5px] sm:text-[8px] tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[var(--muted)] truncate">
             by {{ content.meta.developer }}
           </small>
         </span>

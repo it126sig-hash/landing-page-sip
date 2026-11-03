@@ -62,6 +62,13 @@ export function useContent() {
         ...content.locationSection,
         mapImage: content.locationSection?.mapImage ? withBase(content.locationSection.mapImage) : '',
       },
+      why: {
+        ...content.why,
+        items: (content.why?.items || []).map(item => ({
+          ...item,
+          image: item.image ? withBase(item.image) : item.image,
+        })),
+      },
       // Safe fallbacks for interim components
       advantages: (content.advantages || []).map(a => ({ ...a, image: withBase(a.image) })),
       reasons: content.reasons || {
