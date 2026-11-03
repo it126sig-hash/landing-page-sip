@@ -185,10 +185,13 @@ export default {
   locationSection: {
     eyebrow: 'Temukan lokasi kami',
     title: 'Lebih dekat dengan rencana barumu.',
+    titleHtml: 'Lebih dekat dengan <em class="text-[var(--green)] font-normal">rencana barumu.</em>',
     desc: 'Kenali lokasi Sanggar Indah Palastri dan rencanakan kunjungan langsung untuk melihat lingkungan serta pilihan hunian.',
     address: 'Mangunjaya, Arjasari, Kabupaten Bandung',
     mapUrl: 'https://maps.google.com/?q=Mangunjaya+Arjasari+Kabupaten+Bandung',
-    cta: 'Atur kunjungan',
+    embedMapUrl: 'https://maps.google.com/maps?q=Mangunjaya+Arjasari+Kabupaten+Bandung&t=&z=14&ie=UTF8&iwloc=&output=embed',
+    primaryCta: 'Buka Google Maps',
+    secondaryCta: 'Atur kunjungan',
   },
 
   faqs: [
@@ -261,8 +264,10 @@ export default {
   },
 
   faqSection: {
-    title: 'FAQ',
-    subtitle: 'Pertanyaan yang Sering Ditanyakan',
+    eyebrow: 'Punya pertanyaan?',
+    title: 'Hal yang sering ditanyakan.',
+    titleHtml: 'Hal yang sering <em class="text-[var(--green)] font-normal">ditanyakan.</em>',
+    subtitle: 'Temukan jawaban awal sebelum melangkah lebih jauh untuk memiliki hunian di Palastri.',
     ctaIntro: 'Belum menemukan jawaban yang Anda cari? Tidak apa-apa — kami siap membantu.',
     ctaLabel: 'Tanya Tim Kami',
   },
@@ -270,9 +275,16 @@ export default {
   contactCta: {
     eyebrow: 'Mari mulai percakapan',
     title: 'Satu langkah kecil menuju rumah impian.',
+    titleHtml: 'Satu langkah kecil menuju <em class="text-[#d8d3b7] font-normal">rumah impian.</em>',
     desc: 'Ceritakan kebutuhanmu. Tim kami siap membantu mengenal pilihan hunian dan merencanakan kunjungan ke Palastri.',
     ctaLabel: 'Kirim permintaan konsultasi',
     phoneDisplay: 'WhatsApp Marketing · ' + formatPhoneNumber(meta.whatsapp.number),
+    options: [
+      { value: 'Belum menentukan', label: 'Belum menentukan' },
+      { value: 'Tipe 31/72 Komersial', label: 'Tipe 31/72 Komersial' },
+      { value: 'Tipe 22/60 Subsidi', label: 'Tipe 22/60 Subsidi' },
+      { value: 'Jadwal survei lokasi', label: 'Jadwal survei lokasi' },
+    ],
   },
 
   finalCta: {
@@ -283,6 +295,8 @@ export default {
 
   footer: {
     developedByLabel: 'Dikembangkan oleh',
+    developerShort: 'SIG',
+    desc: 'Ruang untuk pulang, bertumbuh, dan menciptakan lebih banyak cerita bersama keluarga.',
     mainAddress: {
       label: 'Lokasi Proyek',
       lines: ['Mangunjaya, Arjasari', 'Kabupaten Bandung, Jawa Barat'],

@@ -7,7 +7,7 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 ## Ringkasan Proyek & Status Branch
 
 - **Git Branch:** `redesign-palastri` (dibuat dari `master` pada commit `dd954519c3977d0b36b0c17fb75dd388f582f44c`)
-- **Status Sesi:** Fase C selesai diverifikasi QA (Tentang, Pilihan Rumah, Modal Fasad, Kenapa Palastri), Fase D siap dikerjakan.
+- **Status Sesi:** Fase D selesai diverifikasi QA (Lokasi, FAQ Accordion, Kontak Form, Footer), Fase E siap dikerjakan.
 - **Tujuan Utama:**
   1. Transformasi identitas Parahyangan → Palastri (Arjasari, Kab. Bandung).
   2. Redesign visual Natural Scandinavian × Modern Editorial (sage green, warm neutral, DM Sans, Fraunces).
@@ -22,8 +22,8 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 | **A** | **Fondasi (CSS, Config, Data Layer, Assets, Primitives)** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive, computed styles valid) |
 | **B** | **Header, Hero Split, Trust Strip, KPR Strip** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1280/1440/768/375, 1-layar fold, arch portrait 0.82, mobile menu) |
 | **C** | **Tentang, Pilihan Rumah (2 kartu + modal), Kenapa** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1280/768/375, modal interaktif, 0 JS error, 0 404) |
-| **D** | **Lokasi, FAQ Accordion, Kontak Form, Footer** | **siap dikerjakan** | `frontend-agent` & `qa-agent` | Menunggu eksekusi setelah Fase C tuntas |
-| **E** | **Floating WA, Reskin Modal, Cleanup Aset Yatim** | belum | `frontend-agent` & `qa-agent` | Menunggu Fase D tuntas |
+| **D** | **Lokasi, FAQ Accordion, Kontak Form, Footer** | **selesai** | `frontend-agent` & `qa-agent` | Verifikasi PASS (Build, Playwright responsive 1440/1280/768/375, accordion 1-item, form kontak inline, 0 error/404) |
+| **E** | **Floating WA, Reskin Modal, Cleanup Aset Yatim** | **siap dikerjakan** | `frontend-agent` & `qa-agent` | Menunggu eksekusi setelah Fase D tuntas |
 | **F** | **QA Penuh & Dokumentasi Final** | belum | `qa-agent` & `doc-agent` | Menunggu Fase E tuntas |
 
 ---
@@ -129,6 +129,38 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 
 ---
 
+## Rincian Eksekusi Fase D (Lokasi, FAQ Accordion, Kontak Form, Footer)
+
+### Checklist Task Builder (`frontend-agent`):
+- [x] `data/content.js`:
+  - [x] Perkaya `content.locationSection` dengan `titleHtml` (aksen Fraunces `em`), `embedMapUrl` Google Maps Arjasari, `primaryCta` ("Buka Google Maps"), dan `secondaryCta` ("Atur kunjungan").
+  - [x] Perbarui `content.faqSection` dengan eyebrow ("Punya pertanyaan?"), `titleHtml` ("Hal yang sering <em>ditanyakan.</em>"), dan subtitle editorial.
+  - [x] Tambahkan `contactCta.titleHtml` dan opsi dropdown `contactCta.options` (Belum menentukan, Tipe 31/72 Komersial, Tipe 22/60 Subsidi, Jadwal survei lokasi).
+  - [x] Perbarui `content.footer` dengan `developerShort: 'SIG'`, deskripsi brand Palastri yang hangat, dan sinkronisasi tautan navigasi.
+- [x] `components/LocationSection.vue` [NEW]:
+  - [x] Komponen baru dengan anchor `id="lokasi"`.
+  - [x] Layout split 2-kolom: Kiri info lokasi, eyebrow, H2 Fraunces, poin alamat + survei dengan bullet ikon melingkar (⌖, ↗), tombol primary CTA Google Maps ↗ dan tombol outline menuju `#kontak`.
+  - [x] Kanan iframe Google Maps responsif dengan subtle editorial caption badge ("PALASTRI · Mangunjaya · Arjasari") di sudut kiri bawah peta.
+- [x] `components/FaqSection.vue` & `components/FaqItem.vue` [MODIFY]:
+  - [x] `FaqSection.vue`: Layout 2-kolom editorial dengan intro sticky kiri (`top: 7rem`) dan tombol pill "Tanya Tim Kami ↗" menuju WhatsApp Marketing.
+  - [x] `FaqSection.vue`: Logika accordion mutual-exclusion (maksimal 1 item terbuka sekaligus, item pertama `f1` default terbuka).
+  - [x] `FaqItem.vue`: Reskin penuh dengan border token `var(--line)`, hover state `var(--green)`, dan indikator plus (+) bulat yang berotasi 45° dengan latar hijau saat terbuka.
+  - [x] `FaqItem.vue`: Dukungan parsing paragraf ganda, bullet point, dan klik gambar penghargaan/sertifikat yang terhubung ke lightbox.
+- [x] `components/FinalCtaSection.vue` [MODIFY]:
+  - [x] Reskin total form konsultasi dengan palet forest green gelap Scandinavian (`#203227`) beraksen kartu hangat (`#26382E`).
+  - [x] Layout 2-kolom: Kiri copy editorial penutup ("Satu langkah kecil menuju *rumah impian.*"), deskripsi, nomor WhatsApp marketing terformat, dan jam layanan.
+  - [x] Kanan kartu form inline interaktif (input Nama, nomor WhatsApp, dropdown Kebutuhan/Tipe Rumah) dengan validasi client-side seketika.
+  - [x] Integrasi `useConsultationForm()`: alur reCAPTCHA + submit Google Sheets Palastri, pesan sukses hangat dengan tombol fallback WhatsApp langsung berisikan pesan prefilled otomatis.
+- [x] `components/TheFooter.vue` [MODIFY]:
+  - [x] Reskin total dengan background `#26382E` dan border halus `white/10`.
+  - [x] 3 Kolom grid desktop (1.25fr : 0.75fr : 1fr): Brand & lockup developer "SIG.", navigasi cepat Jelajahi (`#beranda`, `#tentang`, `#tipe`, `#keunggulan`, `#lokasi`, `#faq`), serta kontak resmi & kantor pemasaran.
+  - [x] Bottom bar hak cipta Palastri dan kredit by Sanggar Indah Group.
+- [x] `pages/index.vue` [MODIFY]:
+  - [x] Daftarkan dan tempatkan `<LocationSection />` tepat sebelum `<FaqSection />`.
+  - [x] Alur utuh landing page: `TheHeader` → `HeroSection` → `TrustStrip` → `KprPartnerStrip` → `AboutSection` → `ProductsSection` → `WhySection` → `LocationSection` → `FaqSection` → `FinalCtaSection` → `TheFooter`.
+
+---
+
 ## Log Debugging, Temuan & Catatan Teknis
 
 ### Log Verifikasi Fase A (`qa-agent` - 2026-10-30):
@@ -184,6 +216,42 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
   - Modal Detail Terbuka: [fase-c-modal-open.png](file:///C:/Users/Salivs/.gemini/antigravity/brain/1a13e94d-5fce-4ed6-acf9-b49be56a3236/fase-c-modal-open.png)
   - Mobile 375x667: [fase-c-mobile-375.png](file:///C:/Users/Salivs/.gemini/antigravity/brain/1a13e94d-5fce-4ed6-acf9-b49be56a3236/fase-c-mobile-375.png)
 
+### Log Verifikasi Fase D (`qa-agent` - 2026-11-03):
+- **Build test:** PASS (`npm run build` & `npx nuxi generate` exit code 0).
+- **Runtime console & network:** 0 JavaScript console error, 0 network 404 pada seluruh aset & iframe Maps.
+- **Playwright multi-viewport browser test:** PASS pada Desktop Luas (1440x900), Desktop Standar (1280x800), Tablet (768x1024), dan Mobile (375x667).
+- **Validasi Accordion FAQ (1-item aktif):**
+  - Item pertama `f1` default terbuka saat load.
+  - Klik item `f2` sukses membuka `f2` dan seketika menutup `f1` (mutual-exclusion).
+  - Klik ulang item yang sedang terbuka menutup item tersebut (`openFaqId = null`).
+  - Indikator (+) bulat berotasi 45° dengan transisi warna sage → green.
+- **Validasi Form Kontak & WhatsApp Prefilled:**
+  - Validasi form inline aktif (mencegah submit jika nama kosong / < 2 karakter, atau nomor telepon < 9 digit).
+  - Generator fallback WhatsApp prefilled otomatis merangkai nama dan kebutuhan unit ke format pesan resmi marketing.
+  - Opsi dropdown minat unit hunian (Belum menentukan, Tipe 31/72 Komersial, Tipe 22/60 Subsidi, Jadwal survei lokasi) bekerja responsif di seluruh layar.
+- **Responsivitas & Layout Check:**
+  - `LocationSection.vue`: Split card 2-kolom rapi di desktop, bertumpuk vertikal natural di mobile; iframe Google Maps responsif tanpa layout overflow.
+  - `FinalCtaSection.vue`: Form input terlihat tajam dengan kontras tinggi di atas latar forest green (`#203227`), input focus ring beraksen sage green.
+  - `TheFooter.vue`: Tata letak 3-kolom desktop bertransformasi menjadi 1-kolom mobile dengan spasi nyaman dan seluruh tautan navigasi anchor aktif.
+- **Tautan bukti visual tangkapan layar (`docs/qa-evidence/fase-d/`):**
+  - Desktop 1440x900:
+    - [desktop-1440-lokasi.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/desktop-1440-lokasi.png)
+    - [desktop-1440-faq-awards.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/desktop-1440-faq-awards.png)
+    - [desktop-1440-kontak.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/desktop-1440-kontak.png)
+    - [desktop-1440-footer.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/desktop-1440-footer.png)
+  - Desktop 1280x800:
+    - [desktop-1280-lokasi.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/desktop-1280-lokasi.png)
+    - [desktop-1280-kontak.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/desktop-1280-kontak.png)
+  - Tablet 768x1024:
+    - [tablet-768-lokasi.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/tablet-768-lokasi.png)
+    - [tablet-768-kontak.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/tablet-768-kontak.png)
+    - [tablet-768-footer.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/tablet-768-footer.png)
+  - Mobile 375x667:
+    - [mobile-375-lokasi.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/mobile-375-lokasi.png)
+    - [mobile-375-map.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/mobile-375-map.png)
+    - [mobile-375-kontak.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/mobile-375-kontak.png)
+    - [mobile-375-footer.png](file:///c:/Users/Salivs/Data/laragon/www/landingpage-sip/docs/qa-evidence/fase-d/mobile-375-footer.png)
+
 ### Log Awal:
 - 2026-10-30: Branch `redesign-palastri` dibuat dari `master` (commit `dd954519c3977d0b36b0c17fb75dd388f582f44c`).
 - Persiapan aset: file denah tipe 31/72 resolusi rendah (300x430 px) dicatat sebagai debt visual untuk diperbarui bila klien mengirim versi HQ.
@@ -191,17 +259,17 @@ Dokumen acuan progres, log pengujian, catatan debugging, dan konteks antar-fase 
 
 ---
 
-## Konteks untuk Fase D (Siap Dikerjakan)
+## Konteks untuk Fase E (Siap Dikerjakan)
 
-- **Status:** **Siap dikerjakan** (Fase A, B, dan C selesai terverifikasi PASS di seluruh viewport dan interaksi).
-- **Komponen Target Fase D:**
-  - `components/LocationSection.vue` [NEW]: Bagian konektivitas dan akses strategis Palastri di Arjasari (fasilitas sekitar, estimasi jarak/waktu tempuh, dan peta interaktif/embed map bernuansa tenang).
-  - `components/FaqSection.vue` & `components/FaqItem.vue`: Reskin accordion FAQ dengan palet warm neutral & sage green, transisi buka-tutup halus, dan muatan teks tanya-jawab seputar KPR, subsidi, legalitas, serta proses serah terima.
-  - `components/FinalCtaSection.vue`: Reskin call-to-action penutup sebelum footer dengan copy hangat ("Siap memulai langkah baik di Palastri?"), form registrasi minat/booking, dan tombol konsultasi WhatsApp langsung.
-  - `components/TheFooter.vue`: Reskin footer dengan identitas resmi Sanggar Indah Palastri by Sanggar Indah Group, alamat proyek/kantor pemasaran, kontak resmi, legalitas pengembang, dan tautan navigasi anchor.
-- **Kunci Konten Fase D:** `content.location`, `content.faq`, `content.cta`, `content.footer`, `content.meta`.
-- **Standar Tampilan Fase D:**
-  - Desain konsisten Natural Scandinavian × Modern Editorial tanpa warna emas atau gelap warisan.
-  - Accordion FAQ interaktif, responsif, dan mudah dibaca pada mobile.
-  - Formulir pendaftaran minat aman terhubung dengan reCAPTCHA dan Google Sheets Palastri.
-  - Footer proporsional menegaskan rekam jejak kredibilitas 30+ tahun Sanggar Indah Group.
+- **Status:** **Siap dikerjakan** (Fase A, B, C, dan D selesai terverifikasi PASS di seluruh viewport dan interaksi).
+- **Target Pekerjaan Fase E:**
+  - `components/WhatsAppFloatingButton.vue`: Reskin tombol WhatsApp melayang ke tema Palastri (docking kanan bawah ergonomis, palet forest green/sage, tooltip halus, badge nomor kontak).
+  - Reskin Modal & Komponen Pendukung Tambahan:
+    - `components/MgmModal.vue` / modal simulasi KPR / dialog form tambahan bila masih memuat styling atau copy lama Parahyangan.
+  - Audit & Cleanup Aset Yatim:
+    - Audit folder `public/assets/` dari file gambar dan media spesifik Parahyangan yang tidak lagi dipakai.
+    - Audit kode untuk membersihkan styling/variabel yang tidak terpakai (orphaned styles/imports).
+- **Standar Eksekusi:**
+  - Disiplin Karpathy Guidelines (surgical changes, zero regresi).
+  - Build lulus bersih (`npm run build` & `npx nuxi generate`).
+  - Verifikasi Playwright untuk memastikan floating button tidak menutupi elemen penting form/footer di mobile.

@@ -27,3 +27,9 @@ logs
 # Aset final yang benar-benar dipakai situs tetap di public/assets/.
 .design-sig
 identitas-sig-header-hero.html
+
+# QA Playwright transient snapshots & logs
+docs/qa-evidence/**/*.yml
+docs/qa-evidence/**/*.log
+docs/qa-evidence/**/page-*
+docs/qa-evidence/**/element-*

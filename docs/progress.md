@@ -20,3 +20,4 @@ Fase 1 → 2 → 3 wajib berurutan (komponen butuh data layer, data layer butuh 
 - PRD: `docs/PRD_Landing_Sanggar_Indah_Parahyangan.md`
 - Design system: `docs/design/DESIGN.md`
 - Migrasi Backend (Supabase, Admin CMS & Blog SEO): [backend/progress.md](backend/progress.md)
+- Redesign Sanggar Indah Palastri (Branch `redesign-palastri`): [superpowers/specs/progress-palastri.md](superpowers/specs/progress-palastri.md)

@@ -1,104 +1,118 @@
 <script setup>
+import { computed } from 'vue';
 import { useContent } from '~/composables/useContent';
 
 const { content } = useContent();
+
+const currentYear = new Date().getFullYear();
+const waMarketingLink = computed(() => `https://wa.me/${content.meta.whatsapp.number}`);
 </script>
 
 <template>
-  <footer class="bg-[#142b20] border-t border-white/10">
-    <div class="container mx-auto px-4 md:px-20 py-12">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-        <!-- Left: Brand -->
-        <div>
-          <div class="mb-6">
-            <div class="flex items-center gap-3 mb-2">
-              <img :src="content.meta.logo" alt="Logo" class="h-10 w-auto" />
-              <h3 class="font-display text-2xl font-medium text-white">{{ content.meta.projectName }}</h3>
-            </div>
-            <p class="font-body text-lg text-[#c9a84c]"> {{ content.hero.tagline }}</p>
-          </div>
-
-          <!-- Social Icons -->
-          <div class="flex gap-3 mb-6">
-            <a href="https://www.tiktok.com/@sanggarindahparahyangan?lang=en-GB" target="_blank"
-              rel="noopener noreferrer"
-              class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-              aria-label="TikTok">
-              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-              </svg>
-            </a>
-            <a href="https://www.instagram.com/sanggar_indah_parahyangan/" target="_blank" rel="noopener noreferrer"
-              class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-              aria-label="Instagram">
-              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-              </svg>
-            </a>
-          </div>
-
-          <!-- Dikembangkan oleh Sanggar Indah Group -->
+  <footer class="site-footer bg-[#26382E] text-[#f5f3e9] pt-14 pb-8 border-t border-white/10">
+    <div class="container">
+      <div class="footer-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.25fr_0.75fr_1fr] gap-10 lg:gap-16 pb-12">
+        <!-- Kolom 1: Brand & Pengembang -->
+        <div class="footer-brand flex flex-col justify-between">
           <div>
-            <p class="font-body text-sm font-semibold text-white mb-2.5">
-              {{ content.footer.developedByLabel }}
+            <a href="#beranda" class="inline-flex items-center gap-3" aria-label="Sanggar Indah Palastri — Beranda">
+              <span class="w-10 h-10 rounded-full bg-[#d9e1d3] text-[var(--green-deep)] flex items-center justify-center font-serif text-xl font-bold">
+                P
+              </span>
+              <span class="flex flex-col">
+                <strong class="font-serif text-lg text-white font-medium tracking-tight leading-tight">
+                  {{ content.meta.projectName }}
+                </strong>
+                <small class="text-[10px] text-white/50 tracking-wide">
+                  by {{ content.meta.developer }}
+                </small>
+              </span>
+            </a>
+
+            <p class="mt-4 text-xs text-white/60 leading-relaxed max-w-xs">
+              {{ content.footer.desc }}
             </p>
-            <img :src="content.meta.logoGroup" :alt="content.meta.developer"
-              class="w-32 md:w-36 h-auto opacity-90" loading="lazy" />
           </div>
 
-        </div>
-
-        <!-- Middle: Quick Links -->
-        <div class="flex justify-start md:justify-center">
-          <div>
-            <h4 class="font-body text-base font-semibold text-white mb-4">Topic</h4>
-            <nav class="flex flex-col gap-3">
-              <a v-for="link in content.footer.quickLinks" :key="link.id" :href="`#${link.id}`"
-                class="font-body text-sm text-white/70 hover:text-white transition-colors py-1.5 -my-1.5">
-                {{ link.label }}
-              </a>
-            </nav>
+          <div class="group-lockup flex items-center gap-2.5 mt-6 pt-4 border-t border-white/10 text-xs text-white/60">
+            <span>{{ content.footer.developedByLabel }}</span>
+            <strong class="font-serif text-base text-white font-semibold tracking-wide">
+              {{ content.footer.developerShort || 'SIG' }}.
+            </strong>
           </div>
         </div>
 
-        <!-- Right: Kontak Kami -->
-        <div>
-          <h4 class="font-body text-base font-semibold text-white mb-4">Kontak Kami</h4>
-          
+        <!-- Kolom 2: Jelajahi -->
+        <div class="footer-col">
+          <h4 class="text-[10px] font-semibold uppercase tracking-widest text-[#e5e4d8] mb-5">
+            Jelajahi
+          </h4>
+          <nav class="flex flex-col space-y-2.5">
+            <a
+              v-for="link in content.footer.quickLinks"
+              :key="link.id"
+              :href="`#${link.id}`"
+              class="text-xs text-white/65 hover:text-white transition-colors"
+            >
+              {{ link.label }}
+            </a>
+          </nav>
+        </div>
+
+        <!-- Kolom 3: Kontak & Alamat -->
+        <div class="footer-col space-y-4">
+          <h4 class="text-[10px] font-semibold uppercase tracking-widest text-[#e5e4d8] mb-5">
+            Kontak & Alamat
+          </h4>
+
           <!-- WhatsApp -->
-          <div class="flex items-center gap-2 mb-6">
-            <svg class="w-5 h-5 text-[#25D366] shrink-0" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-            </svg>
-            <p class="font-body text-base text-white">{{ content.footer.phoneDisplay }}</p>
-          </div>
-
-          <div class="mb-5">
-            <h5 class="font-body text-sm font-semibold text-white mb-1.5">{{ content.footer.mainAddress.label }}</h5>
-            <p v-for="(line, i) in content.footer.mainAddress.lines" :key="i"
-              class="font-body text-sm text-white/70 leading-relaxed">
-              {{ line }}
-            </p>
-          </div>
-
           <div>
-            <h5 class="font-body text-sm font-semibold text-white mb-1.5">{{ content.footer.secondAddress.label }}</h5>
-            <p v-for="(line, i) in content.footer.secondAddress.lines" :key="i"
-              class="font-body text-sm text-white/70 leading-relaxed">
+            <a
+              :href="waMarketingLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-xs text-emerald-300 hover:text-white transition-colors font-medium"
+            >
+              <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+              <span>{{ content.footer.phoneDisplay }}</span>
+            </a>
+          </div>
+
+          <!-- Alamat Proyek -->
+          <div>
+            <strong class="block text-[11px] font-semibold text-white/90">
+              {{ content.footer.mainAddress.label }}
+            </strong>
+            <p v-for="(line, i) in content.footer.mainAddress.lines" :key="i" class="text-xs text-white/60 leading-relaxed">
               {{ line }}
             </p>
+          </div>
+
+          <!-- Kantor Pusat -->
+          <div>
+            <strong class="block text-[11px] font-semibold text-white/90">
+              {{ content.footer.secondAddress.label }}
+            </strong>
+            <p v-for="(line, i) in content.footer.secondAddress.lines" :key="i" class="text-xs text-white/60 leading-relaxed">
+              {{ line }}
+            </p>
+          </div>
+
+          <!-- Konsultasi Link -->
+          <div class="pt-1">
+            <a href="#kontak" class="inline-flex items-center gap-1.5 text-xs text-[#e2ddc5] hover:text-white transition-colors font-medium">
+              Konsultasi & Jadwal Survei <span class="arrow">↗</span>
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- Divider -->
-      <div class="border-t border-white/10 pt-6">
-        <p class="text-center font-body text-sm text-white/50">
-          © {{ new Date().getFullYear() }} {{ content.meta.projectName }}. All rights reserved.
-        </p>
+      <!-- Bar Bawah -->
+      <div class="footer-bottom flex flex-col sm:flex-row justify-between items-center gap-3 pt-5 border-t border-white/10 text-xs text-white/45">
+        <span>© {{ currentYear }} {{ content.meta.projectName }}. All rights reserved.</span>
+        <span>Bagian dari {{ content.meta.developer }}</span>
       </div>
     </div>
   </footer>

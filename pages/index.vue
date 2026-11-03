@@ -79,6 +79,7 @@ onUnmounted(() => {
     <AboutSection />
     <ProductsSection />
     <WhySection />
+    <LocationSection />
     <FaqSection />
     <FinalCtaSection />
     <TheFooter />
